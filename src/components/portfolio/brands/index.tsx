@@ -14,7 +14,7 @@ export default function Brands() {
 					Below is a summary of technologies I worked with
 				</p>
 
-				<SkillsCloud className="w-1/2 aspect-square" />
+				<SkillsCloud className="w-1/2 aspect-square -mt-20" />
 			</div>
 		</section>
 	);

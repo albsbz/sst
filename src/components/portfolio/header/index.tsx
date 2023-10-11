@@ -9,8 +9,8 @@ export default function Header() {
 					<Image
 						src="/images/navbar-logo.png"
 						alt="Logo"
-						width={50}
-						height={50}
+						width={25}
+						height={25}
 						style={{ width: 'auto', height: 'auto' }}
 					/>
 
@@ -28,10 +28,11 @@ export default function Header() {
 						<Image
 							src="/images/home-img.png"
 							alt="Image"
-							width={200}
-							height={200}
+							width={100}
+							height={100}
 							className="rounded-full"
 							style={{ width: 'auto', height: 'auto' }}
+							priority={true}
 						/>
 					</div>
 

@@ -1,3 +1,4 @@
+import { env } from 'process';
 import { SSTConfig } from 'sst';
 import { NextjsSite } from 'sst/constructs';
 
@@ -6,7 +7,7 @@ export default {
 		return {
 			name: 'sst-my-app-v1',
 			region: 'us-east-1',
-			ssmPrefix: "/albsbz/sst/",
+			ssmPrefix: `/albsbz/sst/${_input.stage}/`,
 		};
 	},
 	stacks(app) {

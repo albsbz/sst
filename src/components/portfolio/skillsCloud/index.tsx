@@ -67,7 +67,7 @@ function Word({
 			ref.current.quaternion.copy(camera.quaternion);
 			// Animate font color
 			ref.current.material.color.lerp(
-				color.set(hovered ? '#fa2720' : 'white'),
+				color.set(hovered ? '#5fc797' : '#dff2e9'),
 				0.1
 			);
 		}
