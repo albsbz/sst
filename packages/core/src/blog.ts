@@ -92,7 +92,6 @@ export const ArticleEntity = new Entity(
 export type TTeamEntity = EntityItem<typeof ArticleEntity>;
 
 export async function createArticle(
-	name: string,
 	title: string,
 	content: string
 ) {
