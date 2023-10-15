@@ -3,6 +3,7 @@ import { SSTConfig } from 'sst';
 import CONFIG from './stacks/config';
 import { NextApp } from './stacks/nextApp';
 import { database } from './stacks/database';
+import { cognito } from './stacks/cognito';
 
 export default {
 	config(_input) {
@@ -16,6 +17,6 @@ export default {
 		if (app.stage !== 'prod') {
 			app.setDefaultRemovalPolicy('destroy');
 		}
-		app.stack(database).stack(NextApp);
+		app.stack(database).stack(cognito).stack(NextApp);
 	},
 } satisfies SSTConfig;

@@ -1,10 +1,10 @@
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
-import { Cognito, Config, NextjsSite, StackContext, use } from 'sst/constructs';
+import { Config, NextjsSite, StackContext, use } from 'sst/constructs';
 
 import config from './config';
 
-import { OAuthScope } from 'aws-cdk-lib/aws-cognito';
 import { database } from './database';
+import { cognito } from './cognito';
 
 export function NextApp({ stack, app }: StackContext) {
 	const customDomain = {
@@ -20,28 +20,7 @@ export function NextApp({ stack, app }: StackContext) {
 		},
 	};
 
-	const auth = new Cognito(stack, 'Auth', {
-		login: ['email'],
-		cdk: {
-			userPoolClient: {
-				oAuth: {
-					callbackUrls: [
-						app.stage === 'prod'
-							? `'https://${config.CUSTOM_DOMAIN}/api/auth/callback/cognito`
-							: 'http://localhost:3000/api/auth/callback/cognito',
-					],
-					logoutUrls: [
-						app.stage === 'prod'
-							? config.CUSTOM_DOMAIN
-							: 'http://localhost:3000',
-					],
-					scopes: [OAuthScope.EMAIL, OAuthScope.OPENID, OAuthScope.PROFILE],
-					flows: { authorizationCodeGrant: true, implicitCodeGrant: false },
-				},
-				generateSecret: true,
-			},
-		},
-	});
+	const auth = use(cognito);
 
 	// Create a cognito userpool domain
 	const cognitoDomain = auth.cdk.userPool.addDomain('AuthDomain', {
