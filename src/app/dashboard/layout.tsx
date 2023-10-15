@@ -14,6 +14,7 @@ export default async function DashboardLayout({
 	if (!session) {
 		redirect(`/api/auth/signin`);
 	}
+	console.log('session', session);
 	return (
 		<ClientProvider session={session}>
 			<section>

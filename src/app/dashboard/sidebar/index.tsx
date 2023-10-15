@@ -2,7 +2,12 @@
 import { Navbar } from 'flowbite-react';
 import Image from 'next/image';
 import { useSession, signIn, signOut } from 'next-auth/react';
-import { PieChart as PieChartIcon, LogIn as LogInIcon } from 'react-feather';
+import {
+	PieChart as PieChartIcon,
+	LogIn as LogInIcon,
+	BookOpen as BookOpenIcon,
+} from 'react-feather';
+import Link from 'next/link';
 
 export default function Sidebar() {
 	const { data: session } = useSession();
@@ -15,20 +20,26 @@ export default function Sidebar() {
 			<div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
 				<ul className="space-y-2 font-medium">
 					<li>
-						<a
-							href="#"
+						<Link
+							href="/dashboard"
 							className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
 						>
 							<PieChartIcon />
 							<span className="ml-3">Dashboard</span>
-						</a>
+						</Link>
+					</li>
+					<li>
+						<Link
+							href="/dashboard/articles"
+							className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+						>
+							<BookOpenIcon />
+							<span className="ml-3">Articles</span>
+						</Link>
 					</li>
 
 					<li>
-						<a
-							href="#"
-							className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-						>
+						<div className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
 							<LogInIcon />
 							{session ? (
 								<button onClick={() => signOut()} className="ml-3">
@@ -39,7 +50,7 @@ export default function Sidebar() {
 									Sign in
 								</button>
 							)}
-						</a>
+						</div>
 					</li>
 				</ul>
 			</div>

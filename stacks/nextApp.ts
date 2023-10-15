@@ -1,9 +1,10 @@
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
-import { Cognito, Config, NextjsSite, StackContext } from 'sst/constructs';
+import { Cognito, Config, NextjsSite, StackContext, use } from 'sst/constructs';
 
 import config from './config';
 
 import { OAuthScope } from 'aws-cdk-lib/aws-cognito';
+import { database } from './database';
 
 export function NextApp({ stack, app }: StackContext) {
 	const customDomain = {
@@ -69,6 +70,7 @@ export function NextApp({ stack, app }: StackContext) {
 		value: cognitoDomain.domainName,
 	});
 
+	const db = use(database);
 	const site = new NextjsSite(stack, 'site', {
 		customDomain,
 		bind: [
@@ -76,6 +78,7 @@ export function NextApp({ stack, app }: StackContext) {
 			COGNITO_CLIENT_ID,
 			COGNITO_CLIENT_SECRET,
 			COGNITO_DOMAIN,
+			db,
 		],
 	});
 

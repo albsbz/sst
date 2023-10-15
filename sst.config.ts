@@ -2,6 +2,7 @@ import { SSTConfig } from 'sst';
 
 import CONFIG from './stacks/config';
 import { NextApp } from './stacks/nextApp';
+import { database } from './stacks/database';
 
 export default {
 	config(_input) {
@@ -15,6 +16,6 @@ export default {
 		if (app.stage !== 'prod') {
 			app.setDefaultRemovalPolicy('destroy');
 		}
-		app.stack(NextApp);
+		app.stack(database).stack(NextApp);
 	},
 } satisfies SSTConfig;
