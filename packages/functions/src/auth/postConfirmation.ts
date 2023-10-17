@@ -11,9 +11,9 @@ type RequestT = {
 export async function main(event: RequestT) {
 	console.log('postConfirmation', event.request);
 	try {
-		await createUser(event.request.userAttributes.email);
+		createUser(event.request.userAttributes.email);
 	} catch (err) {
-		console.log(err);
+		console.log('error creating user', err);
 	}
 	return event;
 }

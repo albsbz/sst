@@ -9,8 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.3.2",
     "@react-three/drei": "^9.88.0",
     "@react-three/fiber": "^8.14.5",
+    "clsx": "^2.0.0",
     "electrodb": "^2.10.3",
     "feather-icons": "^4.29.1",
     "flowbite": "^1.8.1",
@@ -20,8 +22,10 @@
     "react": "^18",
     "react-dom": "^18",
     "react-feather": "^2.0.10",
+    "react-hook-form": "^7.47.0",
     "three": "^0.157.0",
-    "ulid": "^2.3.0"
+    "ulid": "^2.3.0",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/node": "^20",

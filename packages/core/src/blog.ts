@@ -4,31 +4,27 @@ import { ulid } from 'ulid';
 
 export * as Blog from './blog';
 
-export const ArticleEntity = new Entity(
+export const AuthorEntity = new Entity(
 	{
 		model: {
 			version: '1',
-			entity: 'Article',
+			entity: 'Author',
 			service: 'blog',
 		},
 		attributes: {
-			articleId: {
+			authorId: {
 				type: 'string',
 				required: true,
 				readOnly: true,
 			},
-			title: {
+			name: {
 				type: 'string',
 				required: true,
 				readOnly: true,
-			},
-			content: {
-				type: 'string',
-				required: true,
 			},
 		},
 		indexes: {
-			teams: {
+			posters: {
 				collection: 'blog',
 				pk: {
 					field: 'pk',
@@ -36,7 +32,7 @@ export const ArticleEntity = new Entity(
 				},
 				sk: {
 					field: 'sk',
-					composite: ['articleId'],
+					composite: ['name', 'authorId'],
 				},
 			},
 		},
@@ -44,105 +40,220 @@ export const ArticleEntity = new Entity(
 	Dynamo.Configuration
 );
 
-// export const TicketEntity = new Entity(
-//   {
-//     model: {
-//       version: "1",
-//       entity: "Ticket",
-//       service: "jira",
-//     },
-//     attributes: {
-//       ticketId: {
-//         type: "string",
-//         required: true,
-//         readOnly: true,
-//       },
-//       status: {
-//         type: ["pending", "blocked", "inprogress", "complete"] as const,
-//         required: true,
-//       },
-//       title: {
-//         type: "string",
-//         required: true,
-//       },
-//       teamId: {
-//         type: "string",
-//         required: true,
-//         readOnly: true,
-//       },
-//     },
-//     indexes: {
-//       tickets: {
-//         collection: "jira",
-//         pk: {
-//           field: "pk",
-//           composite: ["teamId"],
-//         },
-//         sk: {
-//           field: "sk",
-//           composite: ["ticketId"],
-//         },
-//       },
-//     },
-//   },
-//   Dynamo.Configuration
-// );
+export const PostEntity = new Entity(
+	{
+		model: {
+			version: '1',
+			entity: 'Post',
+			service: 'blog',
+		},
+		attributes: {
+			postId: {
+				type: 'string',
+				required: true,
+				readOnly: true,
+			},
+			title: {
+				type: 'string',
+				required: true,
+			},
+			content: {
+				type: 'string',
+				required: true,
+			},
+			authorId: {
+				type: 'string',
+				required: true,
+			},
+		},
+		indexes: {
+			posts: {
+				collection: 'posts',
+				pk: {
+					field: 'pk',
+					composite: ['authorId'],
+				},
+				sk: {
+					field: 'sk',
+					composite: ['postId'],
+				},
+			},
+			allPosts: {
+				collection: 'allPosts',
+				index: 'gsi2',
+				pk: {
+					field: 'gsi2pk',
+					composite: [],
+				},
+				sk: {
+					field: 'gsi2sk',
+					composite: ['postId'],
+				},
+			},
+			postComments: {
+				collection: 'postComments',
+				index: 'gsi1',
+				pk: {
+					field: 'gsi1pk',
+					composite: ['postId'],
+				},
+				sk: {
+					field: 'gsi1sk',
+					composite: [],
+				},
+			},
+		},
+	},
+	Dynamo.Configuration
+);
 
-// export type TTicketEntity = EntityItem<typeof TicketEntity>;
-export type TTeamEntity = EntityItem<typeof ArticleEntity>;
+export const CommentEntity = new Entity(
+	{
+		model: {
+			version: '1',
+			entity: 'Comment',
+			service: 'blog',
+		},
+		attributes: {
+			postId: {
+				type: 'string',
+				required: true,
+				readOnly: true,
+			},
+			commentId: {
+				type: 'string',
+				required: true,
+				readOnly: true,
+			},
+			comment: {
+				type: 'string',
+				required: true,
+			},
+			authorId: {
+				type: 'string',
+				required: true,
+				readOnly: true,
+			},
+		},
+		indexes: {
+			comments: {
+				pk: {
+					field: 'pk',
+					composite: ['authorId'],
+				},
+				sk: {
+					field: 'sk',
+					composite: ['commentId'],
+				},
+			},
+			postComments: {
+				collection: 'postComments',
+				index: 'gsi1',
+				pk: {
+					field: 'gsi1pk',
+					composite: ['postId'],
+				},
+				sk: {
+					field: 'gsi1sk',
+					composite: ['commentId'],
+				},
+			},
+		},
+	},
+	Dynamo.Configuration
+);
 
-export async function createArticle(
+export type PostEntityType = EntityItem<typeof PostEntity>;
+export type AuthorEntityType = EntityItem<typeof AuthorEntity>;
+export type CommentEntityType = EntityItem<typeof CommentEntity>;
+
+export async function createPost(
+	authorId: string,
 	title: string,
 	content: string
 ) {
-	const result = await ArticleEntity.create({
+	return PostEntity.create({
+		authorId,
 		title,
 		content,
-		articleId: ulid(),
+		postId: ulid(),
 	}).go();
-
-	return result.data;
 }
 
-// export async function deleteTeam(id: string) {
-//   return await TeamEntity.delete({ teamId: id }).go();
-// }
+export async function createAuthor(name: string) {
+	return AuthorEntity.create({
+		name,
+		authorId: ulid(),
+	}).go();
+}
 
-// export async function listTeams() {
-//   // const res = TeamEntity.query.teams({}).params();
-//   // console.log("res: ", res);
-//   const result = await TeamEntity.query.teams({}).go();
+export async function getAuthorByName(name: string) {
+  return AuthorEntity.query.posters({ name }).go();
+}
 
-//   return result.data;
-// }
+export async function comment(
+	comment: string,
+	postId: string,
+	authorId: string
+) {
+	return CommentEntity.create({
+		comment,
+		commentId: ulid(),
+		postId,
+		authorId,
+	}).go();
+}
 
-// export async function create(title: string, teamId: string) {
-//   const result = await TicketEntity.create({
-//     status: "pending",
-//     teamId,
-//     ticketId: ulid(),
-//     title,
-//   }).go();
+export async function listAuthors() {
+	return AuthorEntity.query.posters({}).go();
+}
 
-//   return result.data;
-// }
+export async function listPosts() {
+	return PostEntity.query.allPosts({}).go();
+}
 
-// export async function listTickets(id: string) {
-//   const result = await TicketEntity.query.tickets({ teamId: id }).go();
+export async function getPosts(authorId: string) {
+	// want to see the params that get generated? You can always log them out here.
+	// const params = PostEntity.query.posts({ authorId }).params();
+	// console.log('params: ', params);
 
-//   return result.data;
-// }
+	return PostEntity.query
+		.posts({
+			authorId,
+		})
+		.go();
+}
 
-// export type Statuses = "pending" | "blocked" | "inprogress" | "complete";
+export async function getSinglePost(postId: string) {
+	return PostEntity.query
+		.postComments({
+			postId,
+		})
+		.go();
+}
 
-// export async function updateStatus(
-//   teamId: string,
-//   ticketId: string,
-//   status: Statuses
-// ) {
-//   const result = await TicketEntity.update({ ticketId, teamId })
-//     .set({ status })
-//     .go();
+export async function getComments(postId: string) {
+	return CommentEntity.query
+		.postComments({
+			postId,
+		})
+		.go();
+}
 
-//   return result.data;
+export async function getPostersComments(authorId: string) {
+	// const params = CommentEntity.query.comments({ authorId }).params();
+	// console.log('params: ', params);
+	return CommentEntity.query.comments({ authorId }).go();
+}
+
+// This is unused but an example of how services can be used.
+// const PostService = new Service({ RedditorEntity, PostEntity, CommentEntity });
+
+// export async function getPostFromService(postId: string) {
+//   // want to see the params that get generated? You can always log them out here.
+//   // const params = PostService.collections.postComments({ postId }).params()
+//   // console.log('params: ', params);
+//   const data = await PostService.collections.postComments({ postId }).go();
+
+//   return { post: data.PostEntity, comments: data.CommentEntity };
 // }
