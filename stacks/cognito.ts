@@ -1,5 +1,6 @@
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
 import { Cognito, Config, StackContext, use } from 'sst/constructs';
+import { CfnUserPoolGroup } from 'aws-cdk-lib/aws-cognito';
 
 import config from './config';
 
@@ -40,6 +41,11 @@ export function cognito({ stack, app }: StackContext) {
 		triggers: {
 			postConfirmation: 'packages/functions/src/auth/postConfirmation.main',
 		},
+	});
+
+	const adminGroup = new CfnUserPoolGroup(stack, 'AdminGroup', {
+		groupName: 'Admin',
+		userPoolId: cognito.userPoolId,
 	});
 
 	return cognito;
