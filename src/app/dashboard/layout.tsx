@@ -1,4 +1,5 @@
 import { ClientProvider } from '../../components/client-provider';
+import { authOptions } from '../libs/auth';
 import Header from './header';
 import Sidebar from './sidebar';
 import { getServerSession } from 'next-auth';
@@ -9,12 +10,12 @@ export default async function DashboardLayout({
 }: {
 	children: React.ReactNode;
 }) {
-	const session = await getServerSession();
+	const session = await getServerSession(authOptions);
 
 	if (!session) {
 		redirect(`/api/auth/signin`);
 	}
-	console.log('session', session);
+	console.log(`session${new Date()}`, session);
 	return (
 		<ClientProvider session={session}>
 			<section>

@@ -4,15 +4,17 @@ import { addArticleValidationSchema } from '@/schemas/article/add/addArticleVali
 import { addArticleWithAuthorValidationSchema } from '@/schemas/article/add/addArticleWithAuthorValidation.schema';
 import { getServerSession } from 'next-auth/next';
 import { z } from 'zod';
+import { redirect } from 'next/navigation';
+import { authOptions } from '@/app/libs/auth';
 
 const authorService = new AuthorService();
 const articleService = new ArticleService({ authorService });
 export async function PUT(req: Request) {
-	const session = await getServerSession();
-	const authorName = session?.user?.name;
+	const session = await getServerSession(authOptions);
+
+	const authorName = session?.user?.authorName;
 	const userEmail = session?.user?.email;
 	const data = await req.json();
-	console.log('data1', data);
 	console.log('authorName', authorName);
 
   if (!userEmail) {

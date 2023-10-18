@@ -61,6 +61,5 @@ export function cognito({ stack, app }: StackContext) {
 		groupName: 'Admin',
 		userPoolId: cognito.userPoolId,
 	});
-
 	return cognito;
 }

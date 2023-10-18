@@ -14,7 +14,7 @@ const config = {
 	COGNITO_DOMAIN_PREFIX,
 } as const;
 
-console.log('config', config);
+console.log('stack_config', config);
 
 const validConfig = Object.fromEntries(
 	Object.entries(config).map(([envVariable, configValue]) => {

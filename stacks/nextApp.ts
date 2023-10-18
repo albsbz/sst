@@ -21,7 +21,6 @@ export function NextApp({ stack, app }: StackContext) {
 	};
 
 	const auth = use(cognito);
-
 	// Create a cognito userpool domain
 	const cognitoDomain = auth.cdk.userPool.addDomain('AuthDomain', {
 		cognitoDomain: {
@@ -45,6 +44,22 @@ export function NextApp({ stack, app }: StackContext) {
 		value: `https://cognito-idp.${app.region}.amazonaws.com/${auth.userPoolId}/`,
 	});
 
+	const COGNITO_IDENTITY_POOL_ID = new Config.Parameter(
+		stack,
+		'COGNITO_IDENTITY_POOL_ID',
+		{
+			value: auth.cognitoIdentityPoolId || '',
+		}
+	);
+
+	const COGNITO_USER_POOL_ID = new Config.Parameter(
+		stack,
+		'COGNITO_USER_POOL_ID',
+		{
+			value: auth.userPoolId,
+		}
+	);
+
 	const COGNITO_DOMAIN = new Config.Parameter(stack, 'COGNITO_DOMAIN', {
 		value: cognitoDomain.domainName,
 	});
@@ -57,6 +72,8 @@ export function NextApp({ stack, app }: StackContext) {
 			COGNITO_CLIENT_ID,
 			COGNITO_CLIENT_SECRET,
 			COGNITO_DOMAIN,
+			COGNITO_IDENTITY_POOL_ID,
+			COGNITO_USER_POOL_ID,
 			db,
 			auth,
 		],

@@ -1,7 +1,6 @@
 import { createAuthor, getAuthorByName } from '../../../packages/core/src/blog';
+import { updateCognitoUserAttribute } from '../../../packages/core/src/cognito';
 import { setUserName } from '../../../packages/core/src/user';
-import { Article } from '../article/types/Article';
-// import { Table } from "sst/node/table"
 
 export default class AuthorService {
 	async create({
@@ -17,6 +16,12 @@ export default class AuthorService {
 		console.log('newAuthor', newAuthor);
 		const updatedUser = await setUserName(userEmail, authorName);
 		console.log('updatedUser', updatedUser);
+		const updatedUserCognito = await updateCognitoUserAttribute(
+			userEmail,
+			'custom:authorName',
+			authorName
+		);
+		console.log('updatedUserCognito', updatedUserCognito);
 		return newAuthor;
 	}
 

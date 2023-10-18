@@ -14,7 +14,7 @@ import {
 
 export default function AddForm() {
 	const { data: session, update: updateSession } = useSession();
-	const userName = session?.user?.name;
+	const authorName = session?.user?.authorName;
 	async function onSubmit(
 		formData: AddArticleValidationSchema | AddArticleWithAuthorValidationSchema
 	) {
@@ -25,7 +25,7 @@ export default function AddForm() {
 
 		// Handle response if necessary
 		const data = await response.json();
-		if (!userName) {
+		if (!authorName) {
 			updateSession();
 		}
 		// ...
@@ -37,9 +37,9 @@ export default function AddForm() {
 			inputs={[
 				{
 					name: 'author',
-					default: userName || 'Author name',
+					default: authorName || 'Author name',
 					placeholder: 'Author name',
-					disabled: Boolean(userName),
+					disabled: Boolean(authorName),
 					label: 'Author name',
 				},
 				{
@@ -56,7 +56,7 @@ export default function AddForm() {
 				},
 			]}
 			schema={
-				userName
+				authorName
 					? addArticleValidationSchema
 					: addArticleWithAuthorValidationSchema
 			}
