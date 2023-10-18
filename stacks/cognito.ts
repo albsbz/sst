@@ -1,6 +1,10 @@
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
 import { Cognito, Config, StackContext, use } from 'sst/constructs';
-import { CfnUserPoolGroup } from 'aws-cdk-lib/aws-cognito';
+import {
+	StringAttribute,
+	CfnUserPoolGroup,
+	BooleanAttribute,
+} from 'aws-cdk-lib/aws-cognito';
 
 import config from './config';
 
@@ -28,6 +32,16 @@ export function cognito({ stack, app }: StackContext) {
 					flows: { authorizationCodeGrant: true, implicitCodeGrant: false },
 				},
 				generateSecret: true,
+			},
+			userPool: {
+				customAttributes: {
+					authorName: new StringAttribute({
+						minLen: 5,
+						maxLen: 15,
+						mutable: true,
+					}),
+					isAdmin: new BooleanAttribute({ mutable: true }),
+				},
 			},
 		},
 		defaults: {

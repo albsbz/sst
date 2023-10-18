@@ -53,7 +53,11 @@ export async function createUser(email: string, userType: UserTypeT = 'user') {
 export async function setUserName(email: string, name: string) {
 	const result = await UserEntity.patch({
 		email,
-	}).set({ name });
+	})
+		.set({ name })
+		.go();
+
+	console.log('setUserName', result);
 
 	return result.data;
 }

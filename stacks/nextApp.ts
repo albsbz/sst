@@ -58,6 +58,7 @@ export function NextApp({ stack, app }: StackContext) {
 			COGNITO_CLIENT_SECRET,
 			COGNITO_DOMAIN,
 			db,
+			auth,
 		],
 	});
 
