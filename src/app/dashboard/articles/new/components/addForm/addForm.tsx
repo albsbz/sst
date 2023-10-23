@@ -48,6 +48,7 @@ export default function AddForm() {
 				},
 				{
 					name: 'content',
+					type: 'editor',
 					default: 'Article content',
 					placeholder: 'Article content',
 					label: 'Article content',

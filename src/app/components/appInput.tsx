@@ -1,10 +1,11 @@
 import clsx from 'clsx';
 import { RefCallback, useId } from 'react';
+import dynamic from 'next/dynamic';
 
 type ComponentParameters = {
 	error?: string;
 	label?: string;
-	type?: 'text';
+	type?: 'text' | 'editor';
 	placeholder?: string;
 	reference: RefCallback<HTMLInputElement>;
 	disabled?: boolean;
@@ -47,6 +48,13 @@ export function AppInput({
 		inputClasses = [...inputClasses, 'bg-gray-100', 'cursor-not-allowed'];
 	}
 
+	const AppEditor = dynamic<{ placeholder: string }>(
+		() => import('./appEditor'),
+		{
+			ssr: false,
+		}
+	);
+
 	return (
 		<div className="mb-6">
 			{label && (
@@ -54,16 +62,20 @@ export function AppInput({
 					{label}
 				</label>
 			)}
-			<input
-				{...properties}
-				ref={reference}
-				type={type}
-				id={inputId}
-				className={clsx(inputClasses)}
-				placeholder={placeholder}
-				disabled={disabled}
-				readOnly={disabled}
-			/>
+			{type === 'editor' ? (
+				<AppEditor placeholder={placeholder} />
+			) : (
+				<input
+					{...properties}
+					ref={reference}
+					type={type}
+					id={inputId}
+					className={clsx(inputClasses)}
+					placeholder={placeholder}
+					disabled={disabled}
+					readOnly={disabled}
+				/>
+			)}
 			{error && (
 				<p className="mt-2 text-sm text-red-600 dark:text-red-500">
 					<span className="font-medium">Oops!</span>

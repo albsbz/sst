@@ -8,7 +8,7 @@ import AppButton from './appButton';
 type Input = {
 	default: string | undefined;
 	placeholder: string;
-	type?: 'text';
+	type?: 'text' | 'editor';
 	label?: string;
 	name: string;
 	disabled?: boolean;
