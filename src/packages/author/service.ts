@@ -1,6 +1,9 @@
-import { createAuthor, getAuthorByName } from '../../../packages/core/src/blog';
-import { updateCognitoUserAttribute } from '../../../packages/core/src/cognito';
-import { setUserName } from '../../../packages/core/src/user';
+import {
+	createAuthor,
+	getAuthorByName,
+} from '../../../packages/core/database/blog';
+import { updateCognitoUserAttribute } from '../../../packages/core/database/cognito';
+import { setUserName } from '../../../packages/core/database/user';
 
 export default class AuthorService {
 	async create({

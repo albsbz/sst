@@ -1,4 +1,4 @@
-import { createUser } from '../../../core/src/user';
+import { createUser } from '../../../core/database/user';
 
 type RequestT = {
 	request: {

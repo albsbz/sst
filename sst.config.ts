@@ -4,6 +4,7 @@ import CONFIG from './stacks/config';
 import { NextApp } from './stacks/nextApp';
 import { database } from './stacks/database';
 import { cognito } from './stacks/cognito';
+import { publicStorage } from './stacks/publicStorage';
 
 export default {
 	config(_input) {
@@ -17,6 +18,6 @@ export default {
 		if (app.stage !== 'prod') {
 			app.setDefaultRemovalPolicy('destroy');
 		}
-		app.stack(database).stack(cognito).stack(NextApp);
+		app.stack(database).stack(cognito).stack(publicStorage).stack(NextApp);
 	},
 } satisfies SSTConfig;

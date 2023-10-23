@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.430.0",
+    "@aws-sdk/s3-request-presigner": "^3.431.0",
     "@hookform/resolvers": "^3.3.2",
     "@react-three/drei": "^9.88.0",
     "@react-three/fiber": "^8.14.5",

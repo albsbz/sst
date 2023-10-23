@@ -5,6 +5,7 @@ import config from './config';
 
 import { database } from './database';
 import { cognito } from './cognito';
+import { publicStorage } from './publicStorage';
 
 export function NextApp({ stack, app }: StackContext) {
 	const customDomain = {
@@ -63,8 +64,9 @@ export function NextApp({ stack, app }: StackContext) {
 	const COGNITO_DOMAIN = new Config.Parameter(stack, 'COGNITO_DOMAIN', {
 		value: cognitoDomain.domainName,
 	});
-
+	
 	const db = use(database);
+	const bucket = use(publicStorage);
 	const site = new NextjsSite(stack, 'site', {
 		customDomain,
 		bind: [
@@ -76,6 +78,7 @@ export function NextApp({ stack, app }: StackContext) {
 			COGNITO_USER_POOL_ID,
 			db,
 			auth,
+			bucket,
 		],
 	});
 

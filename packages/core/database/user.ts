@@ -17,6 +17,9 @@ export const UserEntity = new Entity(
 			name: {
 				type: 'string',
 			},
+			avatar: {
+				type: 'string',
+			},
 			userType: {
 				type: ['user', 'admin'] as const,
 				required: true,
@@ -60,4 +63,14 @@ export async function setUserName(email: string, name: string) {
 	console.log('setUserName', result);
 
 	return result.data;
+}
+
+export async function setUserAvatar(email: string, fileKey: string) {
+	const result = await UserEntity.patch({
+		email,
+	})
+		.set({ avatar: fileKey })
+		.go({ response: 'all_old' });
+
+	return result.data.avatar;
 }

@@ -1,7 +1,7 @@
 import ArticleService from '@/packages/article/service';
 import AuthorService from '@/packages/author/service';
-import { addArticleValidationSchema } from '@/schemas/article/add/addArticleValidation.schema';
-import { addArticleWithAuthorValidationSchema } from '@/schemas/article/add/addArticleWithAuthorValidation.schema';
+import { addArticleValidationSchema } from '@/schemas/article/addArticleValidation.schema';
+import { addArticleWithAuthorValidationSchema } from '@/schemas/article/addArticleWithAuthorValidation.schema';
 import { getServerSession } from 'next-auth/next';
 import { z } from 'zod';
 import { redirect } from 'next/navigation';
@@ -17,9 +17,11 @@ export async function PUT(req: Request) {
 	const data = await req.json();
 	console.log('authorName', authorName);
 
-  if (!userEmail) {
-    throw new Error('User not logged in');
-  }
+	if (!userEmail) {
+		return new Response('Not authorized', {
+			status: 401,
+		});
+	}
 	if (!authorName) {
 		const articlePayload = z
 			.object(addArticleWithAuthorValidationSchema)

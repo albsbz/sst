@@ -1,16 +1,14 @@
 'use client';
-import { FormEvent } from 'react';
 import { useSession } from 'next-auth/react';
 import { AppForm } from '@/app/components/appForm';
-import { z } from 'zod';
 import {
 	AddArticleValidationSchema,
 	addArticleValidationSchema,
-} from '@/schemas/article/add/addArticleValidation.schema';
+} from '@/schemas/article/addArticleValidation.schema';
 import {
 	addArticleWithAuthorValidationSchema,
 	AddArticleWithAuthorValidationSchema,
-} from '@/schemas/article/add/addArticleWithAuthorValidation.schema';
+} from '@/schemas/article/addArticleWithAuthorValidation.schema';
 
 export default function AddForm() {
 	const { data: session, update: updateSession } = useSession();

@@ -1,9 +1,6 @@
-import { createPost } from '../../../packages/core/src/blog';
+import { createPost } from '../../../packages/core/database/blog';
 import AuthorService from '../author/service';
-import { Article } from './types/Article';
-// import { Table } from "sst/node/table"
-import { AddArticleValidationSchema } from '@/schemas/article/add/addArticleValidation.schema';
-import { AddArticleWithAuthorValidationSchema } from '@/schemas/article/add/addArticleWithAuthorValidation.schema';
+import { AddArticleWithAuthorValidationSchema } from '@/schemas/article/addArticleWithAuthorValidation.schema';
 export default class ArticleService {
 	private authorService: AuthorService;
 	constructor({ authorService }: { authorService: AuthorService }) {
