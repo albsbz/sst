@@ -1,9 +1,9 @@
-import { useForm, type FieldErrors } from 'react-hook-form';
-import { AppInput } from './appInput';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
+import { useForm, type FieldErrors, useFieldArray } from 'react-hook-form';
 import { z } from 'zod';
+import AppInput from '../appInput';
 import { zodResolver } from '@hookform/resolvers/zod';
-import AppButton from './appButton';
+import AppButton from '../appButton';
 
 type Input = {
 	default: string | undefined;
@@ -40,37 +40,47 @@ export function AppForm({
 			}
 		});
 	}, []);
+
+	const defaultValues = useMemo(
+		() =>
+			Object.fromEntries(inputs.map((input) => [input.name, input.default])),
+		[inputs]
+	);
+
 	const {
 		register,
 		handleSubmit,
 		watch,
 		formState: { errors, isSubmitting, isSubmitted, isDirty, isValid },
+		control,
 	} = useForm<FormData>({
 		mode: 'onChange',
 		resolver: zodResolver(inputSchema),
-		defaultValues: Object.fromEntries(
-			inputs.map((input) => [input.name, input.default])
-		),
+		defaultValues,
 	});
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} noValidate>
-			{inputs.map(({ label, type, placeholder, name, disabled }: Input) => {
-				const { ref, ...rest } = register(name);
-				return (
-					<AppInput
-						key={name}
-						type={type}
-						placeholder={placeholder}
-						label={label}
-						reference={ref}
-						disabled={disabled}
-						{...rest}
-						aria-invalid={Boolean(errors[name])}
-						error={errors?.[name]?.message?.toString()}
-					/>
-				);
-			})}
+			<div>
+				{inputs.map(({ label, type, placeholder, name, disabled }: Input) => {
+					const { ref, ...rest } = register(name);
+					return (
+						<AppInput
+							key={name}
+							inputName={name}
+							type={type}
+							placeholder={placeholder}
+							label={label}
+							reference={ref}
+							disabled={disabled}
+							{...rest}
+							aria-invalid={Boolean(errors[name])}
+							error={errors?.[name]?.message?.toString()}
+							control={control}
+						/>
+					);
+				})}
+			</div>
 
 			<AppButton disabled={isSubmitting || !isValid} label={submitLabel} />
 			<pre>{JSON.stringify(formatErrors(errors), null, 2)}</pre>

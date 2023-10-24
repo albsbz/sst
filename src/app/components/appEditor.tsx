@@ -1,5 +1,5 @@
 'use client';
-import { FC, forwardRef, useRef } from 'react';
+import { FC, RefCallback, forwardRef, useCallback, useRef } from 'react';
 import {
 	MDXEditor,
 	MDXEditorMethods,
@@ -13,18 +13,22 @@ import { UndoRedo } from '@mdxeditor/editor/plugins/toolbar/components/UndoRedo'
 import { BoldItalicUnderlineToggles } from '@mdxeditor/editor/plugins/toolbar/components/BoldItalicUnderlineToggles';
 import { toolbarPlugin } from '@mdxeditor/editor/plugins/toolbar';
 import '@mdxeditor/editor/style.css';
+import { CustomEventT } from './types';
 
 interface EditorProps {
 	markdown: string;
 	editorRef?: React.MutableRefObject<MDXEditorMethods | null>;
-	onChange: () => void;
+	onChange: (value: string) => void;
+	onBlur: () => void;
 }
 
-const Editor: FC<EditorProps> = ({ markdown, editorRef }) => {
+const Editor: FC<EditorProps> = ({ markdown, editorRef, onChange, onBlur }) => {
 	return (
 		<MDXEditor
 			ref={editorRef}
 			markdown={markdown}
+			onChange={onChange}
+			onBlur={onBlur}
 			plugins={[
 				headingsPlugin(),
 				listsPlugin(),
@@ -43,8 +47,27 @@ const Editor: FC<EditorProps> = ({ markdown, editorRef }) => {
 	);
 };
 
-export default function AppEditor({ placeholder }: { placeholder: string }) {
+export default function AppEditor({
+	value,
+	onChange,
+	onBlur,
+	name,
+}: {
+	value: string;
+	name: string;
+	onChange: (event: CustomEventT) => void;
+	onBlur: () => void;
+}) {
+	console.log('AppEditor');
 	const reference = useRef<MDXEditorMethods>(null);
+	const handleChange = useCallback(
+		(newValue: string) => {
+			console.log('ee', newValue);
+
+			onChange({ target: { name, value: newValue } });
+		},
+		[name, onChange]
+	);
 	return (
 		<div>
 			<input
@@ -61,10 +84,9 @@ export default function AppEditor({ placeholder }: { placeholder: string }) {
 
 			<Editor
 				editorRef={reference}
-				markdown={placeholder}
-				onChange={() => {
-					console.log(1);
-				}}
+				markdown={value}
+				onChange={handleChange}
+				onBlur={onBlur}
 			/>
 		</div>
 	);
