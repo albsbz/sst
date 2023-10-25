@@ -1,10 +1,10 @@
-import AddForm from './components/addForm/addForm';
+import NewArticleWrapper from './components/newArticleWrapper';
 
-export default function NewArticle() {
+export default async function NewArticle() {
 	return (
 		<div>
 			<div>New Article</div>
-			<AddForm />
+			<NewArticleWrapper />
 		</div>
 	);
 }

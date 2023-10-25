@@ -1,9 +1,10 @@
 import { useCallback, useMemo } from 'react';
-import { useForm, type FieldErrors, useFieldArray } from 'react-hook-form';
+import { useForm, type FieldErrors } from 'react-hook-form';
 import { z } from 'zod';
 import AppInput from '../appInput';
 import { zodResolver } from '@hookform/resolvers/zod';
 import AppButton from '../appButton';
+import { FileUpload } from '../types/fileUpload.type';
 
 type Input = {
 	default: string | undefined;
@@ -12,6 +13,7 @@ type Input = {
 	label?: string;
 	name: string;
 	disabled?: boolean;
+	fileUpload?: FileUpload;
 };
 
 type ComponentProperties = {
@@ -19,6 +21,7 @@ type ComponentProperties = {
 	inputs: Input[];
 	schema: Record<string, z.ZodType>;
 	onSubmit: (data: any) => Promise<void>;
+	fileUpload?: FileUpload;
 };
 
 export function AppForm({
@@ -62,7 +65,7 @@ export function AppForm({
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} noValidate>
 			<div>
-				{inputs.map(({ label, type, placeholder, name, disabled }: Input) => {
+				{inputs.map(({ label, type, placeholder, name, disabled, fileUpload }: Input) => {
 					const { ref, ...rest } = register(name);
 					return (
 						<AppInput
@@ -73,6 +76,7 @@ export function AppForm({
 							label={label}
 							reference={ref}
 							disabled={disabled}
+							fileUpload={fileUpload}
 							{...rest}
 							aria-invalid={Boolean(errors[name])}
 							error={errors?.[name]?.message?.toString()}

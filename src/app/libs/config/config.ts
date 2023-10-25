@@ -6,6 +6,7 @@ const {
 	NEXTAUTH_SECRET,
 	NEXTAUTH_URL,
 	AVATAR_FOLDER,
+	TEMP_FOLDER
 } = process.env;
 const {
 	COGNITO_CLIENT_ID,
@@ -27,6 +28,7 @@ const joinedConfig = {
 	NEXTAUTH_SECRET,
 	NEXTAUTH_URL,
 	AVATAR_FOLDER,
+	TEMP_FOLDER
 } as const;
 console.log('NEXT_Config', joinedConfig);
 

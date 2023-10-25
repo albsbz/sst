@@ -3,6 +3,7 @@ import { RefCallback, useId } from 'react';
 import dynamic from 'next/dynamic';
 import { Control, Controller, useController } from 'react-hook-form';
 import { CustomEventT } from './types';
+import { FileUpload } from './types/fileUpload.type';
 
 type ComponentParameters = {
 	error?: string;
@@ -13,6 +14,7 @@ type ComponentParameters = {
 	disabled?: boolean;
 	control: Control;
 	inputName: string;
+	fileUpload?: FileUpload;
 };
 
 const AppEditor = dynamic<{
@@ -20,6 +22,7 @@ const AppEditor = dynamic<{
 	onChange: (event: CustomEventT) => void;
 	name: string;
 	onBlur: () => void;
+	fileUpload?: FileUpload;
 }>(() => import('./appEditor'), {
 	ssr: false,
 });
@@ -33,6 +36,7 @@ export default function AppInput({
 	disabled,
 	control,
 	inputName,
+	fileUpload,
 	...properties
 }: ComponentParameters) {
 	const inputId = useId();
@@ -64,7 +68,6 @@ export default function AppInput({
 		inputClasses = [...inputClasses, 'bg-gray-100', 'cursor-not-allowed'];
 	}
 
-	console.log('inputName', inputName);
 	const {
 		field: { onChange, onBlur, value, ref },
 	} = useController({ name: inputName, control });
@@ -83,6 +86,7 @@ export default function AppInput({
 					onChange={onChange}
 					onBlur={onBlur}
 					value={value}
+					fileUpload={fileUpload}
 					{...properties}
 				/>
 			) : (

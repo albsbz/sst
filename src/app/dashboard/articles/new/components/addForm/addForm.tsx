@@ -9,8 +9,10 @@ import {
 	addArticleWithAuthorValidationSchema,
 	AddArticleWithAuthorValidationSchema,
 } from '@/schemas/article/addArticleWithAuthorValidation.schema';
+import { FileUpload } from '@/app/components/types/fileUpload.type';
 
-export default function AddForm() {
+type ComponentProperties = { fileUpload?: FileUpload };
+export default function AddForm({ fileUpload }: ComponentProperties) {
 	const { data: session, update: updateSession } = useSession();
 	const authorName = session?.user?.authorName;
 	async function onSubmit(
@@ -52,6 +54,7 @@ export default function AddForm() {
 					default: 'Article content',
 					placeholder: 'Article content',
 					label: 'Article content',
+					fileUpload,
 				},
 			]}
 			schema={

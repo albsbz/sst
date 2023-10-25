@@ -5,11 +5,13 @@ import {
 } from '@aws-sdk/client-s3';
 import { Bucket } from 'sst/node/bucket';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
+import FileTags from '@/enums/fileTags.enum';
 
 class Storage {
 	private s3Client: S3Client;
 	constructor() {
-		this.s3Client = new S3Client({})
+		this.s3Client = new S3Client({});
 	}
 	async getPresignedURL({ folder, key }: { folder: string; key: string }) {
 		const command = new PutObjectCommand({
@@ -22,6 +24,23 @@ class Storage {
 		});
 
 		return { url, key };
+	}
+
+	async getPresignedPost({ folder }: { folder: string }) {
+		const { url, fields } = await createPresignedPost(this.s3Client, {
+			Bucket: Bucket.public.bucketName,
+			Key: `${folder}` + '${filename}',
+			Conditions: [
+				{ acl: 'public-read' },
+				{ bucket: Bucket.public.bucketName },
+				['starts-with', '$Content-Type', 'image/'],
+				['content-length-range', 0, 1000000],
+			],
+			Fields: { Tagging: FileTags.DeleteTag },
+			Expires: 600,
+		});
+		console.log('fields', fields);
+		return { url, fields };
 	}
 
 	async deleteFile({ folder, key }: { folder: string; key: string }) {

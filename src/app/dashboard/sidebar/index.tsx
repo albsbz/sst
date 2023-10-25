@@ -14,7 +14,7 @@ import { redirect } from 'next/navigation';
 export default function Sidebar() {
 	const { data: session } = useSession();
 	if (!session) {
-	redirect(`/api/auth/signin`);
+		redirect(`/api/auth/signin`);
 	}
 	console.log(`session${new Date()}`, session);
 	return (
