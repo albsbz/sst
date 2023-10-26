@@ -1,5 +1,5 @@
 import { Dynamo } from './dynamo';
-import { Entity, EntityItem } from 'electrodb';
+import { Entity, EntityItem, QueryOperations } from 'electrodb';
 import { ulid } from 'ulid';
 
 export * as Blog from './blog';
@@ -60,6 +60,11 @@ export const PostEntity = new Entity(
 			content: {
 				type: 'string',
 				required: true,
+			},
+			images: {
+				type: 'list',
+				default: [],
+				items: { type: 'string' },
 			},
 			authorId: {
 				type: 'string',
@@ -167,16 +172,23 @@ export type PostEntityType = EntityItem<typeof PostEntity>;
 export type AuthorEntityType = EntityItem<typeof AuthorEntity>;
 export type CommentEntityType = EntityItem<typeof CommentEntity>;
 
-export async function createPost(
-	authorId: string,
-	title: string,
-	content: string
-) {
+export async function createPost({
+	authorId,
+	title,
+	content,
+	images,
+}: {
+	authorId: string;
+	title: string;
+	content: string;
+	images: string[];
+}) {
 	return PostEntity.create({
 		authorId,
 		title,
 		content,
 		postId: ulid(),
+		images,
 	}).go();
 }
 
@@ -188,7 +200,7 @@ export async function createAuthor(name: string) {
 }
 
 export async function getAuthorByName(name: string) {
-  return AuthorEntity.query.posters({ name }).go();
+	return AuthorEntity.query.posters({ name }).go();
 }
 
 export async function comment(
@@ -208,8 +220,18 @@ export async function listAuthors() {
 	return AuthorEntity.query.posters({}).go();
 }
 
-export async function listPosts() {
-	return PostEntity.query.allPosts({}).go();
+export async function listPosts({
+	perPage,
+	page,
+}: {
+	perPage: number;
+	page: number;
+}) {
+	let params: Record<string, string> = {};
+	if (perPage) {
+		params.limit = perPage.toString();
+	}
+	return PostEntity.query.allPosts({}).go(params);
 }
 
 export async function getPosts(authorId: string) {

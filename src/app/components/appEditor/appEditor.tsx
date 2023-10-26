@@ -14,11 +14,22 @@ import { UndoRedo } from '@mdxeditor/editor/plugins/toolbar/components/UndoRedo'
 import { BoldItalicUnderlineToggles } from '@mdxeditor/editor/plugins/toolbar/components/BoldItalicUnderlineToggles';
 import { toolbarPlugin } from '@mdxeditor/editor/plugins/toolbar';
 import '@mdxeditor/editor/style.css';
-import { CustomEventT } from './types';
-import { InsertImage } from '@mdxeditor/editor';
-import { FileUpload } from './types/fileUpload.type';
+import { CustomEventT } from '../types';
+import {
+	ChangeCodeMirrorLanguage,
+	ConditionalContents,
+	InsertCodeBlock,
+	InsertImage,
+	InsertSandpack,
+	ShowSandpackInfo,
+	codeBlockPlugin,
+	codeMirrorPlugin,
+	sandpackPlugin,
+} from '@mdxeditor/editor';
+import { FileUpload } from '../types/fileUpload.type';
 import { ulid } from 'ulid';
-import Config from '../libs/config/config';
+import Config from '../../libs/config/config';
+import { appImagePlugin } from './plugins/appImagePlugin';
 
 interface EditorProps {
 	markdown: string;
@@ -47,52 +58,36 @@ const Editor: FC<EditorProps> = ({
 				listsPlugin(),
 				quotePlugin(),
 				thematicBreakPlugin(),
+				codeBlockPlugin({ defaultCodeBlockLanguage: 'js' }),
+				codeMirrorPlugin({
+					codeBlockLanguages: { js: 'JavaScript', css: 'CSS' },
+				}),
 				toolbarPlugin({
 					toolbarContents: () => (
 						<>
 							<UndoRedo />
 							<BoldItalicUnderlineToggles />
 							<InsertImage />
+							<ConditionalContents
+								options={[
+									{
+										when: (editor) => editor?.editorType === 'codeblock',
+										contents: () => <ChangeCodeMirrorLanguage />,
+									},
+
+									{
+										fallback: () => (
+											<>
+												<InsertCodeBlock />
+											</>
+										),
+									},
+								]}
+							/>
 						</>
 					),
 				}),
-				imagePlugin({
-					imageUploadHandler: async (file) => {
-						if (!fileUpload) {
-							throw new Error('File upload not implemented');
-						}
-						console.log('fileUpload', fileUpload);
-						const fileName = `${ulid()}.${file.name.split('.').pop()}`;
-						const key = `temp/${fileName}`;
-						const formData = new FormData();
-						formData.append('Content-Type', file.type);
-						formData.append('acl', 'public-read');
-						Object.entries(fileUpload.fields).forEach(([k, v]) => {
-							if (k !== 'key') {
-								formData.append(k, v);
-							}
-						});
-						formData.append('key', key);
-						formData.append('file', file, fileName);
-
-						const image = await fetch(fileUpload.url, {
-							body: formData,
-							method: 'POST',
-						});
-
-						//todo
-						// // await fetch('/api/avatar', {
-						// // 	method: 'PATCH',
-						// // 	body: JSON.stringify({ fileKey, url: image.url.split('?')[0] }),
-						// // });
-						// return image.url.split('?')[0];
-						return `${fileUpload.url}${key}`;
-					},
-					imageAutocompleteSuggestions: [
-						'https://picsum.photos/200/300',
-						'https://picsum.photos/200',
-					],
-				}),
+				appImagePlugin(fileUpload),
 			]}
 		/>
 	);
@@ -116,7 +111,7 @@ export default function AppEditor({
 	const reference = useRef<MDXEditorMethods>(null);
 	const handleChange = useCallback(
 		(newValue: string) => {
-			console.log('ee', newValue);
+			console.log('newValue', newValue);
 
 			onChange({ target: { name, value: newValue } });
 		},

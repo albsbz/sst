@@ -23,7 +23,7 @@ const AppEditor = dynamic<{
 	name: string;
 	onBlur: () => void;
 	fileUpload?: FileUpload;
-}>(() => import('./appEditor'), {
+}>(() => import('./appEditor/appEditor'), {
 	ssr: false,
 });
 

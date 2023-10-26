@@ -1,5 +1,15 @@
 import Link from 'next/link';
-export default function Articles() {
+import ArticleList from './articleList';
+import { getFetchUrl } from '@/app/utils/getFetchUrl';
+export default async function Articles() {
+	const queryParams = new URLSearchParams({
+		perPage: '5',
+		page: '1',
+	});
+	const response = await fetch(getFetchUrl(`articles?${queryParams}`), {
+		method: 'GET',
+	});
+	const articles = await response.json();
 	return (
 		<div>
 			<Link
@@ -9,6 +19,7 @@ export default function Articles() {
 				New
 			</Link>
 			<div>Articles</div>
+			<ArticleList initialArticles={articles} />
 		</div>
 	);
 }

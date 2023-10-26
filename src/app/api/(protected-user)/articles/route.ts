@@ -4,8 +4,9 @@ import { addArticleValidationSchema } from '@/schemas/article/addArticleValidati
 import { addArticleWithAuthorValidationSchema } from '@/schemas/article/addArticleWithAuthorValidation.schema';
 import { getServerSession } from 'next-auth/next';
 import { z } from 'zod';
-import { redirect } from 'next/navigation';
 import { authOptions } from '@/app/libs/auth';
+import { NextRequest } from 'next/server';
+import { getQueryParams } from '@/app/utils/getQueryParams';
 
 const authorService = new AuthorService();
 const articleService = new ArticleService({ authorService });
@@ -30,9 +31,22 @@ export async function PUT(req: Request) {
 		return Response.json({});
 	}
 	const articlePayload = z.object(addArticleValidationSchema).parse(data);
+
 	articleService.create({
 		article: { ...articlePayload, author: authorName },
 		userEmail: null,
 	});
+
 	return Response.json({});
+}
+
+export async function GET(req: NextRequest) {
+	const { perPage, page } = getQueryParams(req);
+	console.log('sss', perPage, page);
+	const articles = await articleService.getAll({
+		perPage: Number(perPage),
+		page: Number(page),
+	});
+	return Response.json(articles);
+	// return Response.json({});
 }

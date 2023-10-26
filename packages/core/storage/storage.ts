@@ -2,6 +2,7 @@ import {
 	S3Client,
 	PutObjectCommand,
 	DeleteObjectCommand,
+	PutObjectTaggingCommand,
 } from '@aws-sdk/client-s3';
 import { Bucket } from 'sst/node/bucket';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
@@ -37,10 +38,27 @@ class Storage {
 				['content-length-range', 0, 1000000],
 			],
 			Fields: { Tagging: FileTags.DeleteTag },
-			Expires: 600,
+			Expires: 3600,
 		});
 		console.log('fields', fields);
 		return { url, fields };
+	}
+
+	async changeFileStatus(key: string, status: string) {
+		const command = new PutObjectTaggingCommand({
+			Bucket: Bucket.public.bucketName,
+			Key: key,
+			Tagging: {
+				TagSet: [
+					{
+						Key: 'status',
+						Value: status,
+					},
+				],
+			},
+		});
+
+		return this.s3Client.send(command);
 	}
 
 	async deleteFile({ folder, key }: { folder: string; key: string }) {
@@ -48,8 +66,7 @@ class Storage {
 			Key: `${folder}${key}`,
 			Bucket: Bucket.public.bucketName,
 		});
-		await this.s3Client.send(command);
-		return;
+		return this.s3Client.send(command);
 	}
 }
 const storage = new Storage();
