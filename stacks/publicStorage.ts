@@ -13,6 +13,7 @@ export function publicStorage({ stack }: StackContext) {
 							status: 'delete',
 						},
 						expiration: Duration.days(1),
+						noncurrentVersionExpiration: Duration.days(1),
 					},
 				],
 			},

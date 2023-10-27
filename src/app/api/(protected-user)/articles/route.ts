@@ -41,11 +41,11 @@ export async function PUT(req: Request) {
 }
 
 export async function GET(req: NextRequest) {
-	const { perPage, page } = getQueryParams(req);
-	console.log('sss', perPage, page);
+	const { perPage, cursor } = getQueryParams(req);
+	console.log('sss', perPage, cursor);
 	const articles = await articleService.getAll({
 		perPage: Number(perPage),
-		page: Number(page),
+		cursor,
 	});
 	return Response.json(articles);
 	// return Response.json({});

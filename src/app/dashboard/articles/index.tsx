@@ -4,7 +4,6 @@ import { getFetchUrl } from '@/app/utils/getFetchUrl';
 export default async function Articles() {
 	const queryParams = new URLSearchParams({
 		perPage: '5',
-		page: '1',
 	});
 	const response = await fetch(getFetchUrl(`articles?${queryParams}`), {
 		method: 'GET',

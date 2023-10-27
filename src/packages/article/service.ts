@@ -59,7 +59,7 @@ export default class ArticleService {
 		return newArticle;
 	}
 
-	public async getAll({ perPage, page }: { perPage: number; page: number }) {
-		return listPosts({ perPage, page });
+	public async getAll({ perPage, cursor }: { perPage: number; cursor: string }) {
+		return listPosts({ perPage, cursor });
 	}
 }

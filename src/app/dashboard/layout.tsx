@@ -1,4 +1,4 @@
-import { ClientProvider } from '../../components/client-provider';
+import { ClientProvider } from '../../components/clientProvider';
 import { authOptions } from '../libs/auth';
 import Header from './header';
 import Sidebar from './sidebar';

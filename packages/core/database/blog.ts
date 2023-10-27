@@ -222,14 +222,17 @@ export async function listAuthors() {
 
 export async function listPosts({
 	perPage,
-	page,
+	cursor,
 }: {
 	perPage: number;
-	page: number;
+	cursor: string;
 }) {
 	let params: Record<string, string> = {};
 	if (perPage) {
 		params.limit = perPage.toString();
+	}
+	if (cursor) {
+		params.cursor = cursor;
 	}
 	return PostEntity.query.allPosts({}).go(params);
 }

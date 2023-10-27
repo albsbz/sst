@@ -1,4 +1,3 @@
-import Config from '../libs/config/config';
-
-export const getFetchUrl = (route: string) =>
-	`${Config.NEXTAUTH_URL}/api/${route}`;
+export const getFetchUrl = (route: string) => {
+	return `${process.env.NEXT_PUBLIC_URL}/api/${route}`;
+};

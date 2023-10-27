@@ -3,12 +3,14 @@ import clsx from 'clsx';
 type ComponentProperties = {
 	label: string;
 	classes?: string[];
-	disabled: boolean;
+	disabled?: boolean;
+	onClick?: () => void;
 };
 export default function AppButton({
 	label,
 	classes,
 	disabled,
+	onClick,
 	...properties
 }: ComponentProperties) {
 	let defaultClasses = [
@@ -37,6 +39,7 @@ export default function AppButton({
 		<button
 			disabled={disabled}
 			className={clsx([...defaultClasses, ...(classes = [])])}
+			onClick={onClick}
 			{...properties}
 		>
 			{label}
