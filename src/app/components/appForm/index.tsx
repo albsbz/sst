@@ -5,11 +5,12 @@ import AppInput from '../appInput';
 import { zodResolver } from '@hookform/resolvers/zod';
 import AppButton from '../appButton';
 import { FileUpload } from '../types/fileUpload.type';
+import { InputType } from './types/inputType.type';
 
 type Input = {
 	default: string | undefined;
 	placeholder: string;
-	type?: 'text' | 'editor';
+	type?: InputType;
 	label?: string;
 	name: string;
 	disabled?: boolean;

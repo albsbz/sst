@@ -7,9 +7,10 @@ import { z } from 'zod';
 import { authOptions } from '@/app/libs/auth';
 import { NextRequest } from 'next/server';
 import { getQueryParams } from '@/app/utils/getQueryParams';
+import Services from '@/packages/services';
+import { editArticleValidationSchema } from '@/schemas/article/editArticleValidation.schema';
 
-const authorService = new AuthorService();
-const articleService = new ArticleService({ authorService });
+const { articleService } = Services.getService();
 export async function PUT(req: Request) {
 	const session = await getServerSession(authOptions);
 
@@ -40,6 +41,28 @@ export async function PUT(req: Request) {
 	return Response.json({});
 }
 
+export async function PATCH(req: Request) {
+	const session = await getServerSession(authOptions);
+
+	const userEmail = session?.user?.email;
+	const data = await req.json();
+
+	if (!userEmail) {
+		return new Response('Not authorized', {
+			status: 401,
+		});
+	}
+
+	const articlePayload = z.object(editArticleValidationSchema).parse(data);
+
+	articleService.edit({
+		article: { ...articlePayload },
+		userEmail: null,
+	});
+
+	return Response.json({});
+}
+
 export async function GET(req: NextRequest) {
 	const { perPage, cursor } = getQueryParams(req);
 	console.log('sss', perPage, cursor);
@@ -48,5 +71,4 @@ export async function GET(req: NextRequest) {
 		cursor,
 	});
 	return Response.json(articles);
-	// return Response.json({});
 }

@@ -1,4 +1,4 @@
-import NewArticleWrapper from './components/newArticleWrapper';
+import NewArticleWrapper from './components/newArticlePreloadWrapper';
 
 export default async function NewArticle() {
 	return (

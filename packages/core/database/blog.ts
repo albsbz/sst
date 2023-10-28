@@ -191,6 +191,27 @@ export async function createPost({
 		images,
 	}).go();
 }
+export async function editPost({
+	postId,
+	title,
+	content,
+	images,
+	authorId,
+}: {
+	postId: string;
+	authorId: string;
+	title: string;
+	content: string;
+	images: string[];
+}) {
+	return PostEntity.patch({ postId, authorId })
+		.set({
+			title,
+			content,
+			images,
+		})
+		.go({ response: 'all_old' });
+}
 
 export async function createAuthor(name: string) {
 	return AuthorEntity.create({
