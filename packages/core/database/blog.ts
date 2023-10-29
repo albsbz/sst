@@ -271,6 +271,7 @@ export async function getPosts(authorId: string) {
 }
 
 export async function getSinglePost(postId: string) {
+	console.log('postId', postId);
 	return PostEntity.query
 		.postComments({
 			postId,
