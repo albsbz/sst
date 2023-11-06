@@ -1,10 +1,15 @@
 'use client';
 
+import UploadType from '@/enums/uploadType.enum';
 import { useSession } from 'next-auth/react';
 
-type ComponentParameters = { url: string; fileKey: string };
+type ComponentParameters = { url: string; fileKey: string; folder: string };
 
-export default function UploadForm({ url, fileKey }: ComponentParameters) {
+export default function UploadForm({
+	url,
+	fileKey,
+	folder,
+}: ComponentParameters) {
 	const { update: updateSession } = useSession();
 	return (
 		<form
@@ -24,9 +29,13 @@ export default function UploadForm({ url, fileKey }: ComponentParameters) {
 
 				console.log('image0', image.url, fileKey);
 
-				await fetch('/api/avatar', {
+				await fetch('/api/upload', {
 					method: 'PATCH',
-					body: JSON.stringify({ fileKey, url: image.url.split('?')[0] }),
+					body: JSON.stringify({
+						fileKey,
+						url: image.url.split('?')[0],
+						type: UploadType.Avatar,
+					}),
 				});
 				updateSession();
 			}}

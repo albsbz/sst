@@ -9,9 +9,10 @@ import { NextRequest } from 'next/server';
 import { getQueryParams } from '@/app/utils/getQueryParams';
 import Services from '@/packages/services';
 import { editArticleValidationSchema } from '@/schemas/article/editArticleValidation.schema';
+import { revalidatePath } from 'next/cache';
 
 const { articleService } = Services.getService();
-export async function PUT(req: Request) {
+export async function PUT(req: NextRequest) {
 	const session = await getServerSession(authOptions);
 
 	const authorName = session?.user?.authorName;
@@ -38,10 +39,12 @@ export async function PUT(req: Request) {
 		userEmail: null,
 	});
 
+	revalidatePath('/dashboard/articles');
+
 	return Response.json({});
 }
 
-export async function PATCH(req: Request) {
+export async function PATCH(req: NextRequest) {
 	const session = await getServerSession(authOptions);
 
 	const userEmail = session?.user?.email;
@@ -59,6 +62,8 @@ export async function PATCH(req: Request) {
 		article: { ...articlePayload },
 		userEmail: null,
 	});
+	console.log('path1', req.nextUrl.searchParams);
+	revalidatePath('/dashboard/articles');
 
 	return Response.json({});
 }

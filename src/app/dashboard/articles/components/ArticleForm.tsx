@@ -1,12 +1,8 @@
 'use client';
 import { useSession } from 'next-auth/react';
 import { AppForm } from '@/app/components/appForm';
-import {
-	addArticleValidationSchema,
-} from '@/schemas/article/addArticleValidation.schema';
-import {
-	addArticleWithAuthorValidationSchema,
-} from '@/schemas/article/addArticleWithAuthorValidation.schema';
+import { addArticleValidationSchema } from '@/schemas/article/addArticleValidation.schema';
+import { addArticleWithAuthorValidationSchema } from '@/schemas/article/addArticleWithAuthorValidation.schema';
 import { FileUpload } from '@/app/components/types/fileUpload.type';
 import { Article } from '@/packages/article/types/Article';
 import { INPUT_TYPE } from '@/app/components/appForm/enums/inputType';
@@ -33,10 +29,29 @@ export default function ArticleForm({
 			label: 'Author name',
 		},
 		{
+			name: 'mainImage',
+			default: article?.mainImage,
+			label: 'Main Image',
+			type: INPUT_TYPE.fileUpload,
+			fileUpload,
+		},
+		{
 			name: 'title',
 			default: article?.title || 'Article title',
 			placeholder: 'Article title',
 			label: 'Article title',
+		},
+		{
+			name: 'slug',
+			default: article?.slug || 'article-slug',
+			placeholder: 'Article slug',
+			label: 'Slug',
+		},
+		{
+			name: 'shortDescription',
+			default: article?.shortDescription || 'Article shortDescription',
+			placeholder: 'Article shortDescription',
+			label: 'Short description',
 		},
 		{
 			name: 'content',

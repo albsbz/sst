@@ -1,15 +1,14 @@
 import { cache } from 'react';
 import 'server-only';
-import Config from '../libs/config/config';
 import storage from '../../../packages/core/storage/storage';
 
-export const preload = () => {
-	void getPresignedURL();
+export const preload = ({ folder }: { folder: string }) => {
+	void getPresignedURL({ folder });
 };
 
-export const getPresignedURL = cache(async () => {
+export const getPresignedURL = cache(async ({ folder }: { folder: string }) => {
 	const { url, key } = await storage.getPresignedURL({
-		folder: Config.AVATAR_FOLDER,
+		folder,
 		key: crypto.randomUUID(),
 	});
 

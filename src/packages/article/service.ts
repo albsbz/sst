@@ -47,6 +47,9 @@ export default class ArticleService {
 				authorId: author.data.authorId,
 				title: article.title,
 				content: article.content,
+				shortDescription: article.shortDescription,
+				slug: article.slug,
+				mainImage: article.mainImage,
 				images,
 			});
 			this.changeArticleImagesStatus(images, FileStatus.Confirmed);
@@ -59,6 +62,9 @@ export default class ArticleService {
 			authorId: authorData.authorId,
 			title: article.title,
 			content: article.content,
+			shortDescription: article.shortDescription,
+			slug: article.slug,
+			mainImage: article.mainImage,
 			images,
 		});
 		console.log('newArticle', newArticle);
@@ -83,6 +89,9 @@ export default class ArticleService {
 			postId: article.postId,
 			title: article.title,
 			content: article.content,
+			mainImage: article.mainImage,
+			slug: article.slug,
+			shortDescription: article.shortDescription,
 			images,
 		});
 		//TODO delete old imgs
@@ -94,7 +103,9 @@ export default class ArticleService {
 			this.changeArticleImagesStatus(oldImages, FileStatus.Delete);
 		}
 		console.log('oldArticle', oldArticle);
-		this.changeArticleImagesStatus(images, FileStatus.Confirmed);
+		if (images.length) {
+			this.changeArticleImagesStatus(images, FileStatus.Confirmed);
+		}
 		return;
 	}
 

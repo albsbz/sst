@@ -1,20 +1,25 @@
 import clsx from 'clsx';
 import { RefCallback, useId } from 'react';
 import dynamic from 'next/dynamic';
-import { Control, Controller, useController } from 'react-hook-form';
+import { Control, Controller, UseFormWatch, useController } from 'react-hook-form';
 import { CustomEventT } from './types';
 import { FileUpload } from './types/fileUpload.type';
+import FileUploadInput from './fileUploadInput';
 
 type ComponentParameters = {
 	error?: string;
 	label?: string;
-	type?: 'text' | 'editor';
+	type?: 'text' | 'editor' | 'fileUpload';
 	placeholder?: string;
 	reference: RefCallback<HTMLInputElement>;
 	disabled?: boolean;
 	control: Control;
 	inputName: string;
 	fileUpload?: FileUpload;
+	setValue: (field: string, value: string) => void;
+	watch:  UseFormWatch<{
+		[x: string]: any;
+	}>
 };
 
 const AppEditor = dynamic<{
@@ -37,6 +42,8 @@ export default function AppInput({
 	control,
 	inputName,
 	fileUpload,
+	setValue,
+	watch,
 	...properties
 }: ComponentParameters) {
 	const inputId = useId();
@@ -72,14 +79,10 @@ export default function AppInput({
 		field: { onChange, onBlur, value, ref },
 	} = useController({ name: inputName, control });
 
-	return (
-		<div className="mb-6">
-			{label && (
-				<label htmlFor={inputId} className={clsx(labelClasses)}>
-					{label}
-				</label>
-			)}
-			{type === 'editor' ? (
+	const InputType = () => {
+		console.log('properties', properties);
+		if (type === 'editor') {
+			return (
 				<AppEditor
 					key={`editor-${inputName}`}
 					name={inputName}
@@ -89,19 +92,45 @@ export default function AppInput({
 					fileUpload={fileUpload}
 					{...properties}
 				/>
-			) : (
-				<input
+			);
+		}
+		if (type === 'fileUpload') {
+			return (
+				<FileUploadInput
+					name={inputName}
+					fileUpload={fileUpload}
 					key={inputName}
-					{...properties}
-					ref={reference}
-					type={type}
+					reference={reference}
 					id={inputId}
-					className={clsx(inputClasses)}
-					placeholder={placeholder}
-					disabled={disabled}
-					readOnly={disabled}
+					setValue={setValue}
+					watch={watch}
+					{...properties}
 				/>
+			);
+		}
+		return (
+			<input
+				key={inputName}
+				{...properties}
+				ref={reference}
+				type={type}
+				id={inputId}
+				className={clsx(inputClasses)}
+				placeholder={placeholder}
+				disabled={disabled}
+				readOnly={disabled}
+			/>
+		);
+	};
+
+	return (
+		<div className="mb-6">
+			{label && (
+				<label htmlFor={inputId} className={clsx(labelClasses)}>
+					{label}
+				</label>
 			)}
+			<InputType />
 			{error && (
 				<p className="mt-2 text-sm text-red-600 dark:text-red-500">
 					<span className="font-medium">Oops!</span>

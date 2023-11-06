@@ -53,6 +53,17 @@ export const PostEntity = new Entity(
 				required: true,
 				readOnly: true,
 			},
+			slug: {
+				type: 'string',
+				required: true,
+			},
+			mainImage: {
+				type: 'string',
+			},
+			shortDescription: {
+				type: 'string',
+				required: true,
+			},
 			title: {
 				type: 'string',
 				required: true,
@@ -76,11 +87,11 @@ export const PostEntity = new Entity(
 				collection: 'posts',
 				pk: {
 					field: 'pk',
-					composite: ['authorId'],
+					composite: ['slug'],
 				},
 				sk: {
 					field: 'sk',
-					composite: ['postId'],
+					composite: [],
 				},
 			},
 			allPosts: {
@@ -92,7 +103,7 @@ export const PostEntity = new Entity(
 				},
 				sk: {
 					field: 'gsi2sk',
-					composite: ['postId'],
+					composite: ['authorId'],
 				},
 			},
 			postComments: {
@@ -100,7 +111,7 @@ export const PostEntity = new Entity(
 				index: 'gsi1',
 				pk: {
 					field: 'gsi1pk',
-					composite: ['postId'],
+					composite: ['slug'],
 				},
 				sk: {
 					field: 'gsi1sk',
@@ -177,16 +188,25 @@ export async function createPost({
 	title,
 	content,
 	images,
+	mainImage,
+	shortDescription,
+	slug,
 }: {
 	authorId: string;
 	title: string;
+	shortDescription: string;
 	content: string;
+	mainImage?: string;
+	slug: string;
 	images: string[];
 }) {
 	return PostEntity.create({
 		authorId,
 		title,
+		slug,
 		content,
+		mainImage,
+		shortDescription,
 		postId: ulid(),
 		images,
 	}).go();
@@ -197,18 +217,26 @@ export async function editPost({
 	content,
 	images,
 	authorId,
+	slug,
+	mainImage,
+	shortDescription,
 }: {
 	postId: string;
 	authorId: string;
 	title: string;
 	content: string;
 	images: string[];
+	slug: string;
+	mainImage: string;
+	shortDescription: string;
 }) {
-	return PostEntity.patch({ postId, authorId })
+	return PostEntity.patch({ slug })
 		.set({
 			title,
 			content,
 			images,
+			mainImage,
+			shortDescription,
 		})
 		.go({ response: 'all_old' });
 }
@@ -264,17 +292,16 @@ export async function getPosts(authorId: string) {
 	// console.log('params: ', params);
 
 	return PostEntity.query
-		.posts({
+		.allPosts({
 			authorId,
 		})
 		.go();
 }
 
-export async function getSinglePost(postId: string) {
-	console.log('postId', postId);
+export async function getSinglePost(slug: string) {
 	return PostEntity.query
 		.postComments({
-			postId,
+			slug,
 		})
 		.go();
 }

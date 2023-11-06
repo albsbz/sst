@@ -5,6 +5,7 @@ import UserService from '@/packages/user/service';
 import { updateUserAvatarValidationSchema } from '@/schemas/user/updateUserAvatar';
 import storage from '../../../../../packages/core/storage/storage';
 import Config from '@/app/libs/config/config';
+import UploadType from '@/enums/uploadType.enum';
 
 const userService = new UserService();
 
@@ -18,15 +19,19 @@ export async function PATCH(req: Request) {
 	}
 	const payload = await req.json();
 
-	z.object(updateUserAvatarValidationSchema).parse(payload);
-	userService.setAvatar({
-		url: payload.url,
-		fileKey: payload.fileKey,
-		userEmail,
-	});
-	await storage.deleteFile({
-		folder: Config.AVATAR_FOLDER,
-		key: crypto.randomUUID(),
-	});
-	return Response.json({});
+	console.log('payload', payload);
+	if (payload.type === UploadType.Avatar) {
+		z.object(updateUserAvatarValidationSchema).parse(payload);
+		//TODO move to service
+		userService.setAvatar({
+			url: payload.url,
+			fileKey: payload.fileKey,
+			userEmail,
+		});
+		await storage.deleteFile({
+			folder: Config.AVATAR_FOLDER,
+			key: crypto.randomUUID(),
+		});
+		return Response.json({});
+	}
 }

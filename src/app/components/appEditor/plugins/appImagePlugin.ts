@@ -27,12 +27,6 @@ export const appImagePlugin = (fileUpload?: FileUpload) =>
 				method: 'POST',
 			});
 
-			//todo
-			// // await fetch('/api/avatar', {
-			// // 	method: 'PATCH',
-			// // 	body: JSON.stringify({ fileKey, url: image.url.split('?')[0] }),
-			// // });
-			// return image.url.split('?')[0];
 			return `${fileUpload.url}${key}`;
 		},
 	});

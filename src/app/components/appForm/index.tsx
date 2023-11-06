@@ -9,7 +9,7 @@ import { InputType } from './types/inputType.type';
 
 type Input = {
 	default: string | undefined;
-	placeholder: string;
+	placeholder?: string;
 	type?: InputType;
 	label?: string;
 	name: string;
@@ -57,6 +57,7 @@ export function AppForm({
 		watch,
 		formState: { errors, isSubmitting, isSubmitted, isDirty, isValid },
 		control,
+		setValue,
 	} = useForm<FormData>({
 		mode: 'onChange',
 		resolver: zodResolver(inputSchema),
@@ -66,25 +67,38 @@ export function AppForm({
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} noValidate>
 			<div>
-				{inputs.map(({ label, type, placeholder, name, disabled, fileUpload }: Input) => {
-					const { ref, ...rest } = register(name);
-					return (
-						<AppInput
-							key={name}
-							inputName={name}
-							type={type}
-							placeholder={placeholder}
-							label={label}
-							reference={ref}
-							disabled={disabled}
-							fileUpload={fileUpload}
-							{...rest}
-							aria-invalid={Boolean(errors[name])}
-							error={errors?.[name]?.message?.toString()}
-							control={control}
-						/>
-					);
-				})}
+				{inputs.map(
+					({
+						label,
+						type,
+						placeholder,
+						name,
+						disabled,
+						fileUpload,
+						...properties
+					}: Input) => {
+						const { ref, ...rest } = register(name);
+						return (
+							<AppInput
+								key={name}
+								inputName={name}
+								type={type}
+								placeholder={placeholder}
+								label={label}
+								reference={ref}
+								disabled={disabled}
+								fileUpload={fileUpload}
+								setValue={setValue}
+								watch={watch}
+								{...properties}
+								{...rest}
+								aria-invalid={Boolean(errors[name])}
+								error={errors?.[name]?.message?.toString()}
+								control={control}
+							/>
+						);
+					}
+				)}
 			</div>
 
 			<AppButton disabled={isSubmitting || !isValid} label={submitLabel} />

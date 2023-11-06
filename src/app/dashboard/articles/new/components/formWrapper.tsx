@@ -1,6 +1,6 @@
 'use client';
 import { AddArticleValidationSchema } from '@/schemas/article/addArticleValidation.schema';
-import EditForm from '../../components/ArticleForm';
+import ArticleForm from '../../components/ArticleForm';
 import { AddArticleWithAuthorValidationSchema } from '@/schemas/article/addArticleWithAuthorValidation.schema';
 
 export default function FormWrapper({ ...props }) {
@@ -14,7 +14,7 @@ export default function FormWrapper({ ...props }) {
 	};
 	return (
 		<div>
-			<EditForm {...props} onSubmit={onSubmit} />
+			<ArticleForm {...props} onSubmit={onSubmit} />
 		</div>
 	);
 }
