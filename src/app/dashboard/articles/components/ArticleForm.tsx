@@ -45,6 +45,7 @@ export default function ArticleForm({
 			name: 'slug',
 			default: article?.slug || 'article-slug',
 			placeholder: 'Article slug',
+			disabled: Boolean(article),
 			label: 'Slug',
 		},
 		{
@@ -71,7 +72,7 @@ export default function ArticleForm({
 					? addArticleValidationSchema
 					: addArticleWithAuthorValidationSchema
 			}
-			submitLabel="Add article"
+			submitLabel={article? "Update article":"Add article"}
 		></AppForm>
 	);
 }

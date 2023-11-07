@@ -33,19 +33,23 @@ export default function ArticleList({
 	const articlesToTable = articles.map((article: any) => [
 		<Link
 			key={article['postId']}
-			href={`/article/${article['postId']}`}
+			href={`/article/${article['slug']}`}
 			className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
 		>
 			{article['title']}
 		</Link>,
-		<div key={`content${article['postId']}`} className='max-w-[300px]'>
-			<p  className="truncate">
-				{article['content']}
-			</p>
+		<div key={`slug${article['slug']}`} className="max-w-[300px]">
+			<p className="truncate">{article['slug']}</p>
+		</div>,
+		<div
+			key={`short-description${article['postId']}`}
+			className="max-w-[300px]"
+		>
+			<p className="truncate">{article['shortDescription']}</p>
 		</div>,
 		<Link
 			key={article['postId']}
-			href={`/dashboard/articles/${article['postId']}`}
+			href={`/dashboard/articles/${article['slug']}`}
 			className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
 		>
 			Edit
@@ -57,7 +61,7 @@ export default function ArticleList({
 			<div>
 				<AppTable
 					content={articlesToTable}
-					titles={['Title', 'Content', 'Edit']}
+					titles={['Title', 'Slug', 'Short Description', 'Edit']}
 				/>
 			</div>
 			<AppButton label="More..." onClick={handleClick} disabled={!cursor} />

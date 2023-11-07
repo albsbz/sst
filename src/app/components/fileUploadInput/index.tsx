@@ -6,11 +6,11 @@ import AppImagePlaceholder from '../appImagePlaceholder';
 import { UseFormWatch } from 'react-hook-form';
 type ComponentProperties = {
 	fileUpload?: FileUpload;
-	default?: string;
 	reference: RefCallback<HTMLInputElement>;
 	id: string;
 	setValue: (field: string, value: string) => void;
 	name: string;
+	defaultValue?: string;
 	watch: UseFormWatch<{
 		[x: string]: any;
 	}>;
@@ -22,10 +22,11 @@ export default function FileUploadInput({
 	setValue,
 	name,
 	watch,
+	defaultValue,
 	...properties
 }: ComponentProperties) {
 	const [file, setFile] = useState<Blob | null>(null);
-	const url = watch(name, properties?.default)
+	const url = watch(name, defaultValue);
 	const handleSubmit = async (e: any) => {
 		e.preventDefault();
 		if (!file) return;
@@ -77,7 +78,14 @@ export default function FileUploadInput({
 				accept="image/png, image/jpeg"
 				onChange={handleChange}
 			/>
-			<input {...properties} value={url} ref={reference} id={id} name={name} type="hidden"/>
+			<input
+				{...properties}
+				value={url}
+				ref={reference}
+				id={id}
+				name={name}
+				type="hidden"
+			/>
 			<button type="button" onClick={handleSubmit}>
 				Upload
 			</button>

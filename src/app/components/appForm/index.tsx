@@ -8,7 +8,7 @@ import { FileUpload } from '../types/fileUpload.type';
 import { InputType } from './types/inputType.type';
 
 type Input = {
-	default: string | undefined;
+	default?: string | undefined;
 	placeholder?: string;
 	type?: InputType;
 	label?: string;
@@ -75,7 +75,7 @@ export function AppForm({
 						name,
 						disabled,
 						fileUpload,
-						...properties
+						default: defaultValue,
 					}: Input) => {
 						const { ref, ...rest } = register(name);
 						return (
@@ -90,7 +90,7 @@ export function AppForm({
 								fileUpload={fileUpload}
 								setValue={setValue}
 								watch={watch}
-								{...properties}
+								defaultValue={defaultValue}
 								{...rest}
 								aria-invalid={Boolean(errors[name])}
 								error={errors?.[name]?.message?.toString()}

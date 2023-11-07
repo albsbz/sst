@@ -107,7 +107,6 @@ export default function AppEditor({
 	onBlur: () => void;
 	fileUpload?: FileUpload;
 }) {
-	console.log('AppEditor');
 	const reference = useRef<MDXEditorMethods>(null);
 	const handleChange = useCallback(
 		(newValue: string) => {

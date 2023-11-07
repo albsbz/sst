@@ -1,7 +1,12 @@
 import clsx from 'clsx';
 import { RefCallback, useId } from 'react';
 import dynamic from 'next/dynamic';
-import { Control, Controller, UseFormWatch, useController } from 'react-hook-form';
+import {
+	Control,
+	Controller,
+	UseFormWatch,
+	useController,
+} from 'react-hook-form';
 import { CustomEventT } from './types';
 import { FileUpload } from './types/fileUpload.type';
 import FileUploadInput from './fileUploadInput';
@@ -17,9 +22,10 @@ type ComponentParameters = {
 	inputName: string;
 	fileUpload?: FileUpload;
 	setValue: (field: string, value: string) => void;
-	watch:  UseFormWatch<{
+	watch: UseFormWatch<{
 		[x: string]: any;
-	}>
+	}>;
+	defaultValue?: string;
 };
 
 const AppEditor = dynamic<{
@@ -44,6 +50,7 @@ export default function AppInput({
 	fileUpload,
 	setValue,
 	watch,
+	defaultValue,
 	...properties
 }: ComponentParameters) {
 	const inputId = useId();
@@ -79,50 +86,6 @@ export default function AppInput({
 		field: { onChange, onBlur, value, ref },
 	} = useController({ name: inputName, control });
 
-	const InputType = () => {
-		console.log('properties', properties);
-		if (type === 'editor') {
-			return (
-				<AppEditor
-					key={`editor-${inputName}`}
-					name={inputName}
-					onChange={onChange}
-					onBlur={onBlur}
-					value={value}
-					fileUpload={fileUpload}
-					{...properties}
-				/>
-			);
-		}
-		if (type === 'fileUpload') {
-			return (
-				<FileUploadInput
-					name={inputName}
-					fileUpload={fileUpload}
-					key={inputName}
-					reference={reference}
-					id={inputId}
-					setValue={setValue}
-					watch={watch}
-					{...properties}
-				/>
-			);
-		}
-		return (
-			<input
-				key={inputName}
-				{...properties}
-				ref={reference}
-				type={type}
-				id={inputId}
-				className={clsx(inputClasses)}
-				placeholder={placeholder}
-				disabled={disabled}
-				readOnly={disabled}
-			/>
-		);
-	};
-
 	return (
 		<div className="mb-6">
 			{label && (
@@ -130,7 +93,40 @@ export default function AppInput({
 					{label}
 				</label>
 			)}
-			<InputType />
+			{type === 'editor' && (
+				<AppEditor
+					name={inputName}
+					onChange={onChange}
+					onBlur={onBlur}
+					value={value}
+					fileUpload={fileUpload}
+					{...properties}
+				/>
+			)}
+			{type === 'fileUpload' && (
+				<FileUploadInput
+					name={inputName}
+					fileUpload={fileUpload}
+					reference={reference}
+					id={inputId}
+					setValue={setValue}
+					watch={watch}
+					defaultValue={defaultValue}
+					{...properties}
+				/>
+			)}
+			{(!type || type === 'text') && (
+				<input
+					{...properties}
+					ref={reference}
+					type={type}
+					id={inputId}
+					className={clsx(inputClasses)}
+					placeholder={placeholder}
+					disabled={disabled}
+					readOnly={disabled}
+				/>
+			)}
 			{error && (
 				<p className="mt-2 text-sm text-red-600 dark:text-red-500">
 					<span className="font-medium">Oops!</span>
