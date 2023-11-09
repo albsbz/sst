@@ -28,6 +28,13 @@ export default class ArticleService {
 			});
 		}
 	}
+
+	private getImageKeyFromLink(link: string) {
+		const [key]  = link.match(
+			REGEXP_PATTERNS.mainImageKey
+		) || ['']
+		return key
+	}
 	public async create({
 		article,
 		userEmail,
@@ -96,13 +103,27 @@ export default class ArticleService {
 		});
 		//TODO delete old imgs
 
-		const oldImages = oldArticle.data.images?.filter(
-			(oldImage) => !images.includes(oldImage)
-		);
-		if (oldImages) {
+		const oldImages =
+			oldArticle.data.images?.filter(
+				(oldImage) => !images.includes(oldImage)
+			) || [];
+		const oldMainImage = oldArticle.data.mainImage;
+		if (oldMainImage) {
+			if (oldMainImage !== article.mainImage) {
+			
+				oldImages.push(this.getImageKeyFromLink(oldMainImage));
+				const mainImage = this.getImageKeyFromLink(article.mainImage)
+				if (mainImage) {
+					console.log("mainImage", mainImage)
+					this.changeArticleImagesStatus([mainImage], FileStatus.Confirmed);
+				}
+			}
+		}
+		if (oldImages.length) {
 			this.changeArticleImagesStatus(oldImages, FileStatus.Delete);
 		}
 		console.log('oldArticle', oldArticle);
+
 		if (images.length) {
 			this.changeArticleImagesStatus(images, FileStatus.Confirmed);
 		}

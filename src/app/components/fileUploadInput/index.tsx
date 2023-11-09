@@ -80,7 +80,7 @@ export default function FileUploadInput({
 			/>
 			<input
 				{...properties}
-				value={url}
+				value={url || ''}
 				ref={reference}
 				id={id}
 				name={name}
