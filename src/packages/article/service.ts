@@ -3,6 +3,7 @@ import {
 	createPost,
 	editPost,
 	getSinglePost,
+	getSinglePostWithAuthor,
 	listPosts,
 } from '../../../packages/core/database/blog';
 import AuthorService from '../author/service';
@@ -29,11 +30,19 @@ export default class ArticleService {
 		}
 	}
 
+	private deleteImages(
+		images: string[] | null,
+	) {
+		if (images) {
+			images.map((image) => {
+				storage.deleteFile({ folder: '', key: image });
+			});
+		}
+	}
+
 	private getImageKeyFromLink(link: string) {
-		const [key]  = link.match(
-			REGEXP_PATTERNS.mainImageKey
-		) || ['']
-		return key
+		const [key] = link.match(REGEXP_PATTERNS.mainImageKey) || [''];
+		return key;
 	}
 	public async create({
 		article,
@@ -110,17 +119,16 @@ export default class ArticleService {
 		const oldMainImage = oldArticle.data.mainImage;
 		if (oldMainImage) {
 			if (oldMainImage !== article.mainImage) {
-			
 				oldImages.push(this.getImageKeyFromLink(oldMainImage));
-				const mainImage = this.getImageKeyFromLink(article.mainImage)
+				const mainImage = this.getImageKeyFromLink(article.mainImage);
 				if (mainImage) {
-					console.log("mainImage", mainImage)
+					console.log('mainImage', mainImage);
 					this.changeArticleImagesStatus([mainImage], FileStatus.Confirmed);
 				}
 			}
 		}
 		if (oldImages.length) {
-			this.changeArticleImagesStatus(oldImages, FileStatus.Delete);
+			this.deleteImages(oldImages);
 		}
 		console.log('oldArticle', oldArticle);
 
@@ -134,13 +142,16 @@ export default class ArticleService {
 		perPage,
 		cursor,
 	}: {
-		perPage: number;
-		cursor: string;
+		perPage?: number;
+		cursor?: string;
 	}) {
 		return listPosts({ perPage, cursor });
 	}
 
-	public async getBySlug({ slug }: { slug: string }) {
+	public async getBySlug({ slug, author }: { slug: string; author: boolean }) {
+		if (author) {
+			return getSinglePostWithAuthor(slug);
+		}
 		return getSinglePost(slug);
 	}
 }

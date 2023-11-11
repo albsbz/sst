@@ -17,22 +17,42 @@ export const AuthorEntity = new Entity(
 				required: true,
 				readOnly: true,
 			},
+			email: {
+				type: 'string',
+				required: true,
+				readOnly: true,
+			},
 			name: {
 				type: 'string',
 				required: true,
 				readOnly: true,
 			},
+			avatar: {
+				type: 'string',
+			},
 		},
 		indexes: {
-			posters: {
-				collection: 'blog',
+			postersByEmail: {
+				collection: 'authorByEmail',
 				pk: {
 					field: 'pk',
 					composite: [],
 				},
 				sk: {
 					field: 'sk',
-					composite: ['name', 'authorId'],
+					composite: ['email'],
+				},
+			},
+			postersById: {
+				collection: 'authorById',
+				index: 'gsi1',
+				pk: {
+					field: 'gsi1pk',
+					composite: [],
+				},
+				sk: {
+					field: 'gsi1sk',
+					composite: ['authorId'],
 				},
 			},
 		},
@@ -241,15 +261,31 @@ export async function editPost({
 		.go({ response: 'all_old' });
 }
 
-export async function createAuthor(name: string) {
+export async function createAuthor(name: string, email: string) {
 	return AuthorEntity.create({
 		name,
+		email,
 		authorId: ulid(),
 	}).go();
 }
 
+export async function setAuthorAvatar(email: string, url: string) {
+	console.log('setAuthorAvatar', email, url);
+	const result = await AuthorEntity.patch({
+		email,
+	})
+		.set({ avatar: url })
+		.go({ response: 'all_old' });
+
+	return result.data.avatar;
+}
+
 export async function getAuthorByName(name: string) {
-	return AuthorEntity.query.posters({ name }).go();
+	return AuthorEntity.query.postersByEmail({ name }).go();
+}
+
+export async function getAuthorById(authorId: string) {
+	return AuthorEntity.query.postersByEmail({ authorId }).go();
 }
 
 export async function comment(
@@ -266,15 +302,15 @@ export async function comment(
 }
 
 export async function listAuthors() {
-	return AuthorEntity.query.posters({}).go();
+	return AuthorEntity.query.postersByEmail({}).go();
 }
 
 export async function listPosts({
 	perPage,
 	cursor,
 }: {
-	perPage: number;
-	cursor: string;
+	perPage?: number;
+	cursor?: string;
 }) {
 	let params: Record<string, string> = {};
 	if (perPage) {
@@ -299,11 +335,27 @@ export async function getPosts(authorId: string) {
 }
 
 export async function getSinglePost(slug: string) {
-	return PostEntity.query
+	const article = await PostEntity.query
 		.postComments({
 			slug,
 		})
 		.go();
+	return { article: article.data[0] };
+}
+
+export async function getSinglePostWithAuthor(slug: string) {
+	const article = await PostEntity.query
+		.postComments({
+			slug,
+		})
+		.go();
+	console.log('article44', article);
+	let author;
+	if (article.data[0].authorId) {
+		author = await getAuthorById(article.data[0].authorId);
+		console.log('author44', author);
+	}
+	return { article: article.data[0], author: author?.data[0] };
 }
 
 export async function getComments(postId: string) {

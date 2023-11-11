@@ -10,12 +10,12 @@ export default async function EditArticlePreloadWrapper({
 	preload(slug);
 	const fileUpload = await getPresignedPost();
 
-	const article = await getArticleBySlug(slug);
+	const {article} = await getArticleBySlug(slug);
 
 	return (
 		<div>
 			{slug}
-			<FormWrapper fileUpload={fileUpload} article={article.data[0]} />
+			<FormWrapper fileUpload={fileUpload} article={article} />
 		</div>
 	);
 }

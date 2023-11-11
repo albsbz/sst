@@ -5,8 +5,9 @@ import { Article } from '@/packages/article/types/Article';
 export default async function EditArticle({ article }: { article: Article }) {
 	return (
 		<article className="mx-auto w-full max-w-2xl format format-sm sm:format-base lg:format-lg format-blue dark:format-invert">
-			{/* <ArticleHeader /> */}
-			<p className="lead">{article.content}</p>
+			{JSON.stringify(article, null, 2)}
+			<ArticleHeader title={article.title} author={article.author} />
+			<p className="lead">{article.shortDescription}</p>
 
 			<MDXRemote source={article.content} />
 			{/* <BlogCommentsSection /> */}

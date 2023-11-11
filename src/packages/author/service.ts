@@ -15,7 +15,7 @@ export default class AuthorService {
 	}) {
 		console.log('authorName', authorName);
 
-		const newAuthor = await createAuthor(authorName);
+		const newAuthor = await createAuthor(authorName, userEmail);
 		console.log('newAuthor', newAuthor);
 		const updatedUser = await setUserName(userEmail, authorName);
 		console.log('updatedUser', updatedUser);

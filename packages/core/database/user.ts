@@ -65,12 +65,12 @@ export async function setUserName(email: string, name: string) {
 	return result.data;
 }
 
-export async function setUserAvatar(email: string, fileKey: string) {
+export async function setUserAvatar(email: string, url: string) {
 	const result = await UserEntity.patch({
 		email,
 	})
-		.set({ avatar: fileKey })
+		.set({ avatar: url })
 		.go({ response: 'all_old' });
 
-	return result.data.avatar;
+	return result.data;
 }

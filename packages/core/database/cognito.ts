@@ -11,6 +11,12 @@ export const updateCognitoUserAttribute = async (
 	attributeName: string,
 	attributeValue: string
 ) => {
+	console.log(
+		'updateCognitoUserAttribute',
+		userEmail,
+		attributeName,
+		attributeValue
+	);
 	const input = {
 		UserPoolId: Config.COGNITO_USER_POOL_ID,
 		Username: userEmail,

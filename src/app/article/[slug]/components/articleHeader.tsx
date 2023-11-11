@@ -1,4 +1,7 @@
-export default function ArticleHeader() {
+import { Author } from "@/packages/author/types/Author";
+
+type ComponentProperties = { title: string; author: Author };
+export default function ArticleHeader({ title, author }: ComponentProperties) {
 	return (
 		<header className="mb-4 lg:mb-6 not-format">
 			<address className="flex items-center mb-6 not-italic">
@@ -14,7 +17,7 @@ export default function ArticleHeader() {
 							rel="author"
 							className="text-xl font-bold text-gray-900 dark:text-white"
 						>
-							Jese Leos
+							{author.name}
 						</a>
 						<p className="text-base text-gray-500 dark:text-gray-400">
 							Graphic Designer, educator & CEO Flowbite
@@ -28,7 +31,7 @@ export default function ArticleHeader() {
 				</div>
 			</address>
 			<h1 className="mb-4 text-3xl font-extrabold leading-tight text-gray-900 lg:mb-6 lg:text-4xl dark:text-white">
-				Best practices for successful prototypes
+				{title}
 			</h1>
 		</header>
 	);

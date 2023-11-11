@@ -3,9 +3,9 @@ import { z } from 'zod';
 import { authOptions } from '@/app/libs/auth';
 import UserService from '@/packages/user/service';
 import { updateUserAvatarValidationSchema } from '@/schemas/user/updateUserAvatar';
-import storage from '../../../../../packages/core/storage/storage';
 import Config from '@/app/libs/config/config';
 import UploadType from '@/enums/uploadType.enum';
+import storage from '../../../../packages/core/storage/storage';
 
 const userService = new UserService();
 

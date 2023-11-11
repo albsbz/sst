@@ -1,15 +1,16 @@
 import { getFetchUrl } from '@/app/utils/getFetchUrl';
 import Article from '.';
+import { Article as ArticleT } from '@/packages/article/types/Article';
+
 export async function generateStaticParams() {
 	console.log('generateStaticParams');
-	return [
-		{
-			slug: '01HDPBFYHFTRXE96S8837ZNEC3',
-		},
-		{
-			slug: '01HDV5EJQX2C0FFTGRCGJ9WQSK',
-		},
-	];
+	const response = await fetch(getFetchUrl(`articles`));
+	const { data } = await response.json();
+	return data.map((article: ArticleT) => {
+		return {
+			slug: article.slug,
+		};
+	});
 }
 
 export default async function ArticlePage({
@@ -17,13 +18,11 @@ export default async function ArticlePage({
 }: {
 	params: { slug: string };
 }) {
-	const res = await fetch(getFetchUrl(`article/${params.slug}`), {
+	console.log('slug66', params);
+	const res = await fetch(getFetchUrl(`article/${params.slug}?author=1`), {
 		method: 'GET',
 		next: { revalidate: 1 },
 	});
-	const {
-		data: [article],
-	} = await res.json();
-	console.log('post', article);
+	const article = await res.json();
 	return <Article article={article} />;
 }

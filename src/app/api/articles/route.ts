@@ -13,6 +13,7 @@ import { revalidatePath } from 'next/cache';
 
 const { articleService } = Services.getService();
 export async function PUT(req: NextRequest) {
+	console.log('PUT', req);
 	const session = await getServerSession(authOptions);
 
 	const authorName = session?.user?.authorName;

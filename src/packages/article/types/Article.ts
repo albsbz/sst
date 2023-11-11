@@ -1,3 +1,5 @@
+import { Author } from '@/packages/author/types/Author';
+
 export type Article = {
 	title: string;
 	content: string;
@@ -6,4 +8,5 @@ export type Article = {
 	mainImage: string;
 	authorId: string;
 	postId: string;
+	author: Author;
 };
