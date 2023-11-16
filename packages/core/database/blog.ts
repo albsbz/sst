@@ -14,8 +14,6 @@ export const AuthorEntity = new Entity(
 		attributes: {
 			authorId: {
 				type: 'string',
-				required: true,
-				readOnly: true,
 			},
 			email: {
 				type: 'string',
@@ -25,8 +23,8 @@ export const AuthorEntity = new Entity(
 			name: {
 				type: 'string',
 				required: true,
-				readOnly: true,
 			},
+			description: { type: 'string' },
 			avatar: {
 				type: 'string',
 			},
@@ -275,6 +273,25 @@ export async function setAuthorAvatar(email: string, url: string) {
 		email,
 	})
 		.set({ avatar: url })
+		.go({ response: 'all_old' });
+
+	return result.data.avatar;
+}
+
+export async function setAuthor(
+	email: string,
+	name: string,
+	description: string,
+	avatar: string
+) {
+	console.log('setAuthorAvatar', email);
+	const result = await AuthorEntity.upsert({
+		email,
+		avatar,
+		description,
+		name,
+	})
+		.ifNotExists({ authorId: ulid() })
 		.go({ response: 'all_old' });
 
 	return result.data.avatar;

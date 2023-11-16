@@ -7,10 +7,12 @@ export const preload = ({ folder }: { folder: string }) => {
 };
 
 export const getPresignedURL = cache(async ({ folder }: { folder: string }) => {
+	
 	const { url, key } = await storage.getPresignedURL({
 		folder,
 		key: crypto.randomUUID(),
 	});
+
 
 	return { url, key };
 });

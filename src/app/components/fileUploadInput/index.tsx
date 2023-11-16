@@ -25,10 +25,9 @@ export default function FileUploadInput({
 	defaultValue,
 	...properties
 }: ComponentProperties) {
-	const [file, setFile] = useState<Blob | null>(null);
+	// const [file, setFile] = useState<Blob | null>(null);
 	const url = watch(name, defaultValue);
-	const handleSubmit = async (e: any) => {
-		e.preventDefault();
+	const handleSubmit = async (file: Blob | null) => {
 		if (!file) return;
 		console.log('files', file);
 
@@ -37,7 +36,8 @@ export default function FileUploadInput({
 		}
 		console.log('fileUpload', fileUpload);
 		const fileName = `${ulid()}.${file.name.split('.').pop()}`;
-		const key = `temp/${fileName}`;
+		const key = fileUpload?.fields.key.replace('${filename}', fileName);
+		console.log('key65', fileUpload?.fields.key, key);
 		const formData = new FormData();
 		formData.append('Content-Type', file.type);
 		formData.append('acl', 'public-read');
@@ -61,7 +61,7 @@ export default function FileUploadInput({
 		console.log('handleChange', e);
 		const fileFromInput = e.target.files?.[0];
 		if (fileFromInput) {
-			setFile(fileFromInput);
+			handleSubmit(fileFromInput);
 		}
 	};
 	return (
@@ -86,9 +86,9 @@ export default function FileUploadInput({
 				name={name}
 				type="hidden"
 			/>
-			<button type="button" onClick={handleSubmit}>
+			{/* <button type="button" onClick={handleSubmit}>
 				Upload
-			</button>
+			</button> */}
 		</div>
 	);
 }

@@ -15,6 +15,15 @@ export function publicStorage({ stack }: StackContext) {
 						expiration: Duration.days(1),
 						noncurrentVersionExpiration: Duration.days(1),
 					},
+					{
+						id: 'delete-old-avatar',
+						prefix: 'avatars/',
+						tagFilters: {
+							status: 'delete',
+						},
+						expiration: Duration.days(1),
+						noncurrentVersionExpiration: Duration.days(1),
+					},
 				],
 			},
 		},

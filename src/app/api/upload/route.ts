@@ -9,29 +9,29 @@ import storage from '../../../../packages/core/storage/storage';
 
 const userService = new UserService();
 
-export async function PATCH(req: Request) {
-	const session = await getServerSession(authOptions);
-	const userEmail = session?.user?.email;
-	if (!userEmail) {
-		return new Response('Not authorized', {
-			status: 401,
-		});
-	}
-	const payload = await req.json();
+// export async function PATCH(req: Request) {
+// 	const session = await getServerSession(authOptions);
+// 	const userEmail = session?.user?.email;
+// 	if (!userEmail) {
+// 		return new Response('Not authorized', {
+// 			status: 401,
+// 		});
+// 	}
+// 	const payload = await req.json();
 
-	console.log('payload', payload);
-	if (payload.type === UploadType.Avatar) {
-		z.object(updateUserAvatarValidationSchema).parse(payload);
-		//TODO move to service
-		userService.setAvatar({
-			url: payload.url,
-			fileKey: payload.fileKey,
-			userEmail,
-		});
-		await storage.deleteFile({
-			folder: Config.AVATAR_FOLDER,
-			key: crypto.randomUUID(),
-		});
-		return Response.json({});
-	}
-}
+// 	console.log('payload', payload);
+// 	if (payload.type === UploadType.Avatar) {
+// 		z.object(updateUserAvatarValidationSchema).parse(payload);
+// 		//TODO move to service
+// 		userService.setAvatar({
+// 			url: payload.url,
+// 			fileKey: payload.fileKey,
+// 			userEmail,
+// 		});
+// 		await storage.deleteFile({
+// 			folder: Config.AVATAR_FOLDER,
+// 			key: crypto.randomUUID(),
+// 		});
+// 		return Response.json({});
+// 	}
+// }
